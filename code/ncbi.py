@@ -110,5 +110,7 @@ while not checkIfNcbiBlastRequestIsReads(request[0]):
   time.sleep(5)
 print "result readyness: %s" % ready
 print "Fetch results ..."
-print getNcbiBlastResultString(request[0])
+f = open("~/blast.txt", 'w+')
+f.write(getNcbiBlastResultString(request[0]))
+f.close()
 
