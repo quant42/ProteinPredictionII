@@ -99,7 +99,7 @@ def getNcbiBlastResultString(rid):
   return html
 
 print "sending request ..."
-request = sendNcbiBlastRequest("NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP")
+request = sendNcbiBlastRequest("MALLAMHSWRWAAAAAAFEKRRHSAILIRPLVSVSGSGPQWRPHQLGALGTARAYQIPESLKSITWQRLGKGNSGQFLDAAKALQVWPLIEKRTCWHGHAGGGLHTDPKEGLKDVDTRKIIKAMLSYVWPKDRPDLRARVAISLGFLGGAKAMNIVVPFMFKYAVDSLNQMSGNMLNLSDAPNTVATMATAVLIGYGVSRAGAA")
 print "rid: %s rtoe: %s" % request
 ready = checkIfNcbiBlastRequestIsReads(request[0])
 print "result readyness: %s" % ready
@@ -110,7 +110,7 @@ while not checkIfNcbiBlastRequestIsReads(request[0]):
   time.sleep(5)
 print "result readyness: %s" % ready
 print "Fetch results ..."
-f = open("~/blast.txt", 'w+')
+f = open("blast.txt", 'w+')
 f.write(getNcbiBlastResultString(request[0]))
 f.close()
 
