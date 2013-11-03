@@ -98,19 +98,21 @@ def getNcbiBlastResultString(rid):
     html += data
   return html
 
-print "sending request ..."
-request = sendNcbiBlastRequest("MALLAMHSWRWAAAAAAFEKRRHSAILIRPLVSVSGSGPQWRPHQLGALGTARAYQIPESLKSITWQRLGKGNSGQFLDAAKALQVWPLIEKRTCWHGHAGGGLHTDPKEGLKDVDTRKIIKAMLSYVWPKDRPDLRARVAISLGFLGGAKAMNIVVPFMFKYAVDSLNQMSGNMLNLSDAPNTVATMATAVLIGYGVSRAGAA")
-print "rid: %s rtoe: %s" % request
-ready = checkIfNcbiBlastRequestIsReads(request[0])
-print "result readyness: %s" % ready
-time.sleep(float(request[1]))
-print "check result ready ..."
-ready = False
-while not checkIfNcbiBlastRequestIsReads(request[0]):
-  time.sleep(5)
-print "result readyness: %s" % ready
-print "Fetch results ..."
-f = open("blast.txt", 'w+')
-f.write(getNcbiBlastResultString(request[0]))
-f.close()
+# this is a test if this is the main class
+if __name == "__main__":
+  print "sending request ..."
+  request = sendNcbiBlastRequest("MALLAMHSWRWAAAAAAFEKRRHSAILIRPLVSVSGSGPQWRPHQLGALGTARAYQIPESLKSITWQRLGKGNSGQFLDAAKALQVWPLIEKRTCWHGHAGGGLHTDPKEGLKDVDTRKIIKAMLSYVWPKDRPDLRARVAISLGFLGGAKAMNIVVPFMFKYAVDSLNQMSGNMLNLSDAPNTVATMATAVLIGYGVSRAGAA")
+  print "rid: %s rtoe: %s" % request
+  ready = checkIfNcbiBlastRequestIsReads(request[0])
+  print "result readyness: %s" % ready
+  time.sleep(float(request[1]))
+  print "check result ready ..."
+  ready = False
+  while not checkIfNcbiBlastRequestIsReads(request[0]):
+    time.sleep(5)
+  print "result readyness: %s" % ready
+  print "Fetch results ..."
+  f = open("blast.txt", 'w+')
+  f.write(getNcbiBlastResultString(request[0]))
+  f.close()
 
