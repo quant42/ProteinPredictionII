@@ -16,7 +16,6 @@ class Blast():
   """ A basic blasting class """
   
   # a timestamp for blasting with ncbi
-  date = time()
   
   # constructor for building this class, if the header of the sequences, the sequences them self and the
   # corresponding blastResults are already known
