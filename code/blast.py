@@ -20,7 +20,21 @@ class Blast():
   # constructor for building this class, if the header of the sequences, the sequences them self and the
   # corresponding blastResults are already known
   def __init__(self, blastResults):
-    out.writeLog(blastResults)
+    # parse the blast results
+    beginOfResults = False
+    lines = blastResults.split('\n')
+    result = ""
+    for line in lines:
+      # skip empty lines
+      if not line.strip():
+        continue
+      # skip all lines about the authors, blast improvments etc. until the actual searching results begin
+      if beginOfResults:
+        result += line + "\n"
+      else:
+        if line.find("Sequences producing significant alignments:") != -1:
+          beginOfResults = True
+    out.writeLog(result)
   
   @staticmethod
   def ncbiBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP"):  # TODO
@@ -33,9 +47,11 @@ class Blast():
   
   @staticmethod
   def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta"):
-    out.writeDebug("Do a local blast search for %s in %s" % (seq, database))
-    blastResults = Blast( commands.getstatusoutput( "echo \"%s\" | blast2 -p blastp -d ../data/genes_UniProt.fasta" % seq ) )
-    return Blast( blastResults )
+    out.writeDebug( "Do a local blast search for {} in {}".format( seq, database ) )
+    blastResults = commands.getstatusoutput( "echo \"%s\" | blast2 -p blastp -d ../data/genes_UniProt.fasta" % seq )
+    if blastResults[0] != 0:
+      out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, blastResults[0] ) )
+    return Blast( blastResults[1] )
 
 # if this is the main method, perform some basic tests
 if __name__ == "__main__":
