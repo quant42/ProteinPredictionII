@@ -5,8 +5,9 @@
 # with the blast algorithm. Therefor blast must be installed locally
 # (Ubuntu: sudo apt-get install blast2) or the ncbi blast must be
 # available.
-# 
-# 
+# Call Blast.ncbiBlast(seq="") or Blast.localBlast(seq="", 
+# database="") to do the blast alignments. You will get a Blast class
+# which has an attribute alignments.
 # ===================================================================
 
 import out, commands
@@ -15,26 +16,40 @@ class Blast():
   
   """ A basic blasting class """
   
-  # a timestamp for blasting with ncbi
-  
   # constructor for building this class, if the header of the sequences, the sequences them self and the
   # corresponding blastResults are already known
   def __init__(self, blastResults):
+    out.writeDebug("Initalize Blast Alignment by blasting results ...")
+    # self stuff
+    self.alignments = []
     # parse the blast results
     beginOfResults = False
     lines = blastResults.split('\n')
-    result = ""
+    tmp = []
     for line in lines:
       # skip empty lines
       if not line.strip():
         continue
       # skip all lines about the authors, blast improvments etc. until the actual searching results begin
       if beginOfResults:
-        result += line + "\n"
+        if line[0] == ">":
+          self.__analyseTmp(tmp)
+          tmp = []
+        elif line.startswith("  Database: "):
+          self.__analyseTmp(tmp)
+          tmp = []
+        tmp.append( line )
       else:
         if line.find("Sequences producing significant alignments:") != -1:
           beginOfResults = True
-    out.writeLog(result)
+    self.__analyseTmp(tmp)
+  
+  def __analyseTmp(self, tmp):
+    # ok check type, is the first with >
+    if tmp[0][0] != ">":
+      out.writeDebug("\n".join(tmp))
+    else:
+      out.writeLog("\n".join(tmp))
   
   @staticmethod
   def ncbiBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP"):  # TODO
