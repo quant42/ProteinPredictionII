@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 # imports
-import socket, urllib, time
+import socket, urllib, time, out
 
 # general settings and constants
 NCBI_BLAST_HOST = "www.ncbi.nlm.nih.gov"
@@ -30,8 +30,10 @@ GENERAL_HTTP_GET_REQUEST += "\r\n"
 # this function sends an ncbi blast request
 # and returns a tuple(query Id from with which the results can be fetched later, approximate time to wait for the blasting results)
 # if nothing was given by ncbi, they are None
+# Note, that the blast request should not contain any HTTP characters like &, ?, = etc.
 def sendNcbiBlastRequest(blastRequest):
   global NCBI_BLAST_HOST, NCBI_BLAST_PATH_SEND, NCBI_BLAST_PATH_WAIT, NCBI_BLAST_PATH_RESULTS, NCBI_BLAST_MINTIMEOUT_MS, GENERAL_HTTP_POST_REQUEST, GENERAL_HTTP_GET_REQUEST
+  out.writeDebug("Attemped to send a ncbi blastp request ...")
   # build query
   httpRequestQuery = NCBI_BLAST_PATH_SEND_PARAMS % blastRequest
   # build a socket, connect to ncbi and send the request
@@ -55,11 +57,13 @@ def sendNcbiBlastRequest(blastRequest):
       rtoe = htmlLine[htmlLine.find("=") + 1:].strip()
   # in the end close the socket connection
   s.close()
+  out.writeDebug("Request result: Id: %s approx. Time: %s" % (rid, rtoe))
   return (rid, rtoe)
 
 # this function check, if the requested blast search is ready, and might be fetched
 def checkIfNcbiBlastRequestIsReads(rid):
   global NCBI_BLAST_HOST, NCBI_BLAST_PATH_SEND, NCBI_BLAST_PATH_WAIT, NCBI_BLAST_PATH_RESULTS, NCBI_BLAST_MINTIMEOUT_MS, GENERAL_HTTP_POST_REQUEST, GENERAL_HTTP_GET_REQUEST
+  out.writeDebug("Check for blast results ready (Id: %s) ..." & rid)
   # build a socket, connect to ncbi and send the request
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.connect((NCBI_BLAST_HOST, 80))
@@ -81,10 +85,12 @@ def checkIfNcbiBlastRequestIsReads(rid):
       break
   # in the end close the socket connection
   s.close()
+  out.writeDebug("Results (Id: %s) ready = %s" % result)
   return result
 
 def getNcbiBlastResultString(rid):
   global NCBI_BLAST_HOST, NCBI_BLAST_PATH_SEND, NCBI_BLAST_PATH_WAIT, NCBI_BLAST_PATH_RESULTS, NCBI_BLAST_MINTIMEOUT_MS, GENERAL_HTTP_POST_REQUEST, GENERAL_HTTP_GET_REQUEST
+  out.writeDebug("Fetch blast results ...")
   # build a socket, connect to ncbi and send the request
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.connect((NCBI_BLAST_HOST, 80))
