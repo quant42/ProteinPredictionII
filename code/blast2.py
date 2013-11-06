@@ -45,7 +45,6 @@ class Blast():
                 elif child3.nodeName == 'Hsp_query-to':
                   hit_to = child3.childNodes[0].nodeValue
           break
-          
       self.hits.append({'hit_id':hit_id, 'hit_e_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to)})
     
   @staticmethod
@@ -58,4 +57,5 @@ class Blast():
 
 # if this is the main method, perform some basic tests
 if __name__ == "__main__":
-  Blast.localBlast()
+  b = Blast.localBlast("MGRGAGREYSPAATTAENGGGKKKQKEKELDELKKEVAMDDHKLSLDELGRKYQVDLSKGLTNQRAQDVLARDGPNALTPPPTTPEWVKFCRQLFGGFSILLWIGAILCF")
+  print b.seq

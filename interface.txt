@@ -1,0 +1,11 @@
+Für jeden Predicter:
+
+- Sequence liste: hits
+  ein hit ist ein Dictionary mit:
+   - hit_id: Der id des Hits
+   - hit_value: Der score des Values
+   - hit_order: True:max, False:min
+   - hit_from: hit start position
+   - hit_to: hit end position
+
+Der Predictor sollte eine Methode getSimilar(seq="") implementieren
