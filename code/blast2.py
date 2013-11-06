@@ -10,7 +10,7 @@
 # which has an attribute alignments.
 # ===================================================================
 # sequence produces malformed xml_
-#MGRGAGREYSPAATTAENGGGKKKQKEKELDELKKEVAMDDHKLSLDELGRKYQVDLSKGLTNQRAQDVLARDGPNALTPPPTTPEWVKFCRQLFGGFSILLWIGAILCFLAYGIQAAMEDEPSNDNLYLGVVLAAVVIVTGCFSYYQEAKSSKIMDSFKNMVPQQALVIREGEKMQINAEEVVVGDLVEVKGGDRVPADLRIISSHGCKVDNSSLTGESEPQTRSPEFTHENPLETRNICFFSTNCVEGTARGIVIATGDRTVMGRIATLASGLEVGRTPIAMEIEHFIQLITGVAVFLGVSFFVLSLILGYSWLEAVIFLIGIIVANVPEGLLATVTVCLTLTAKRMARKNCLVKNLEAVETLGSTSTICSDKTGTLTQNRMTVAHMWFDNQIHEADTTEDQSGATFDKRSPTWTALSRIAGLCNRAVFKAGQENISVSKRDTAGDASESALLKCIELSCGSVRKMRDRNPKVAEIPFNSTNKYQLSIHEREDSPQSHVLVMKGAPERILDRCSTILVQGKEIPLDKEMQDAFQNAYMELGGLGERVLGFCQLNLPSGKFPRGFKFDTDELNFPTEKLCFVGLMSMIDPPRAAVPDAVGKCRSAGIKVIMVTGDHPITAKAIAKGVGIISEGNETVEDIAARLNIPMSQVNPREAKACVVHGSDLKDMTSEQLDEILKNHTEIVFARTSPQQKLIIVEGCQRQGAIVAVTGDGVNDSPALKKADIGIAMGISGSDVSKQAADMILLDDNFASIVTGVEEGRLIFDNLKKSIAYTLTSNIPEITPFLLFIIANIPLPLGTVTILCIDLGTDMVPAISLAYEAAESDIMKRQPRNSQTDKLVNERLISMAYGQIGMIQALGGFFTYFVILAENGFLPSRLLGIRLDWDDRTMNDLEDSYGQEWTYEQRKVVEFTCHTAFFASIVVVQWADLIICKTRRNSVFQQGMKNKILIFGLLEETALAAFLSYCPGMGVALRMYPLKVTWWFCAFPYSLLIFIYDEVRKLILRRYPGGWVEKETYY
+# MGRGAGREYSPAATTAENGGGKKKQKEKELDELKKEVAMDDHKLSLDELGRKYQVDLSKGLTNQRAQDVLARDGPNALTPPPTTPEWVKFCRQLFGGFSILLWIGAILCFLAYGIQAAMEDEPSNDNLYLGVVLAAVVIVTGCFSYYQEAKSSKIMDSFKNMVPQQALVIREGEKMQINAEEVVVGDLVEVKGGDRVPADLRIISSHGCKVDNSSLTGESEPQTRSPEFTHENPLETRNICFFSTNCVEGTARGIVIATGDRTVMGRIATLASGLEVGRTPIAMEIEHFIQLITGVAVFLGVSFFVLSLILGYSWLEAVIFLIGIIVANVPEGLLATVTVCLTLTAKRMARKNCLVKNLEAVETLGSTSTICSDKTGTLTQNRMTVAHMWFDNQIHEADTTEDQSGATFDKRSPTWTALSRIAGLCNRAVFKAGQENISVSKRDTAGDASESALLKCIELSCGSVRKMRDRNPKVAEIPFNSTNKYQLSIHEREDSPQSHVLVMKGAPERILDRCSTILVQGKEIPLDKEMQDAFQNAYMELGGLGERVLGFCQLNLPSGKFPRGFKFDTDELNFPTEKLCFVGLMSMIDPPRAAVPDAVGKCRSAGIKVIMVTGDHPITAKAIAKGVGIISEGNETVEDIAARLNIPMSQVNPREAKACVVHGSDLKDMTSEQLDEILKNHTEIVFARTSPQQKLIIVEGCQRQGAIVAVTGDGVNDSPALKKADIGIAMGISGSDVSKQAADMILLDDNFASIVTGVEEGRLIFDNLKKSIAYTLTSNIPEITPFLLFIIANIPLPLGTVTILCIDLGTDMVPAISLAYEAAESDIMKRQPRNSQTDKLVNERLISMAYGQIGMIQALGGFFTYFVILAENGFLPSRLLGIRLDWDDRTMNDLEDSYGQEWTYEQRKVVEFTCHTAFFASIVVVQWADLIICKTRRNSVFQQGMKNKILIFGLLEETALAAFLSYCPGMGVALRMYPLKVTWWFCAFPYSLLIFIYDEVRKLILRRYPGGWVEKETYY
 
 
 import out, commands, re
@@ -27,35 +27,23 @@ class Blast():
     # self stuff
     self.hits = []
     # parse the blast results
-    self.xml_raw = minidom.parseString(blastResults)
-    hitlist = self.xml_raw.getElementsByTagName('Hit') 
-    for hit in hitlist:
-      hit_id, hit_e_value, hit_from, hit_to = '', 0, -1, -1
-      for child in hit.childNodes:
-        if child.nodeName == 'Hit_def':
-          hit_id = child.childNodes[0].nodeValue.split()[0]
-        elif child.nodeName == 'Hit_hsps':
-          for child2 in child.childNodes:
-            if child2.nodeName == 'Hsp':
-              for child3 in child2.childNodes:
-                if child3.nodeName == 'Hsp_evalue':
-                  hit_e_value = child3.childNodes[0].nodeValue
-                elif child3.nodeName == 'Hsp_query-from':
-                  hit_from = child3.childNodes[0].nodeValue
-                elif child3.nodeName == 'Hsp_query-to':
-                  hit_to = child3.childNodes[0].nodeValue
-          break
-      self.hits.append({'hit_id':hit_id, 'hit_e_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to)})
+    begin = False
+    for line in blastResults.split('\n'):
+      if line.startswith('#'):
+        begin = True
+      elif begin:
+        query_id, hit_id, perc_identity, alignment_length, mismatches, gap_openings, q_start, q_end, hit_from, hit_to, hit_e_value, bit_score = line.split('\t')
+
+        self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False})
     
   @staticmethod
   def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta"):
     out.writeDebug( "Do a local blast search for {} in {}".format( seq, database ) )
-    blastResults = commands.getstatusoutput( "echo \"%s\" | blast2 -p blastp -d ../data/genes_UniProt.fasta -N -m 7" % seq )
+    blastResults = commands.getstatusoutput( "echo \"%s\" | blast2 -p blastp -d ../data/genes_UniProt.fasta -N -m 9" % seq )
     if blastResults[0] != 0:
       out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, blastResults[0] ) )
     return Blast( blastResults[1] )
 
 # if this is the main method, perform some basic tests
 if __name__ == "__main__":
-  b = Blast.localBlast("MGRGAGREYSPAATTAENGGGKKKQKEKELDELKKEVAMDDHKLSLDELGRKYQVDLSKGLTNQRAQDVLARDGPNALTPPPTTPEWVKFCRQLFGGFSILLWIGAILCF")
-  print b.seq
+  Blast.localBlast()
