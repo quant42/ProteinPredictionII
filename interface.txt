@@ -8,4 +8,16 @@ Für jeden Predicter:
    - hit_from: hit start position
    - hit_to: hit end position
 
-Der Predictor sollte eine Methode getSimilar(seq="") implementieren
+Der Predictor sollte eine Methode getSimilar(seq="") implementieren.
+
+===
+
+Der k-Sequenzen auswähler:
+
+Eine Funktion getSimilarSeqs(seq="", k=6), die eine Liste von hits (siehe oben zurückgibt)
+Eine Funktion addMethod(method)
+Eine Funktion deleteMethod(method)
+Eine Funktion hasMethod(methode)
+Eine Funktion getAllMethods()
+
+Alle Methoden, die addbar sind, sollen threadsave sein
