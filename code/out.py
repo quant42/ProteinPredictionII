@@ -25,7 +25,7 @@ def writeDebug(string):
     if outputFormat == "plain":
       sys.stderr.write("{}\n".format( string ) )
     elif outputFormat == "html":
-      sys.stderr.write("<span class=\"stream errStream debugMessage\">{}</span><br>".format( string ) )
+      sys.stderr.write("<span class=\"stream errStream debugMessage\">{}</span><br>\n".format( string ) )
     else:
       sys.stderr.write("\033[38;5;7m[DEBUG] {}\033[0m\n".format( string ) )
 
@@ -34,7 +34,7 @@ def writeLog(string):
     if outputFormat == "plain":
       sys.stderr.write("{}\n".format( string ) )
     elif outputFormat == "html":
-      sys.stderr.write("<span class=\"stream errStream logMessage\">{}</span><br>".format( string ) )
+      sys.stderr.write("<span class=\"stream errStream logMessage\">{}</span><br>\n".format( string ) )
     else:
       sys.stderr.write("\033[38;5;10m[LOG] {}\033[0m\n".format( string ) )
 
@@ -43,7 +43,7 @@ def writeWarning(string):
     if outputFormat == "plain":
       sys.stderr.write("{}\n".format( string ) )
     elif outputFormat == "html":
-      sys.stderr.write("<span class=\"stream errStream warningMessage\">{}</span><br>".format( string ) )
+      sys.stderr.write("<span class=\"stream errStream warningMessage\">{}</span><br>\n".format( string ) )
     else:
       sys.stderr.write("\033[38;5;11m[WARNING] {}\033[0m\n".format( string ) )
 
@@ -52,7 +52,7 @@ def writeError(string):
     if outputFormat == "plain":
       sys.stderr.write("{}\n".format( string ) )
     elif outputFormat == "html":
-      sys.stderr.write("<span class=\"stream errStream errorMessage\">{}</span><br>".format( string ) )
+      sys.stderr.write("<span class=\"stream errStream errorMessage\">{}</span><br>\n".format( string ) )
     else:
       sys.stderr.write("\033[38;5;9m[ERROR] {}\033[0m\n".format( string ) )
 
@@ -61,5 +61,5 @@ def writeOutput(string):
     if outputFormat != "html":
       sys.stdout.write("{}\n".format( string ) )
     else:
-      sys.stdout.write("<span class=\"stream outStream outputMessage\">{}</span><br>".format( string ) )
+      sys.stdout.write("<span class=\"stream outStream outputMessage\">{}</span><br>\n".format( string ) )
 

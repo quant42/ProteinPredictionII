@@ -1,0 +1,67 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{default}
+
+\begin{document}
+
+\begin{frame}
+ \frametitle{ProteinPrediction II}
+ PPII Ex1 - Week 1\\
+ \hfill \\
+ Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori
+\end{frame}
+
+\begin{frame}
+ \frametitle{our tools}
+ \begin{enumerate}
+  \item GIT
+  \item Python
+  \item blast
+  \item hhblits
+  \item interface specification
+ \end{enumerate}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Stuff done}
+ \begin{enumerate}
+  \item[1.] Clean Header
+ \end{enumerate}
+ Small python script uses a regular expression to get the uniprot ids
+ \begin{enumerate}
+  \item[2.] Prepare blast database
+ \end{enumerate}
+ formatdb -i genes\_UniProt.fasta
+ \begin{enumerate}
+  \item[3.] get the n nearest proteins
+ \end{enumerate}
+ python \_\_main\_\_.py --seq ``Sequence'' -k $<$n$>$
+\end{frame}
+
+\begin{frame}
+ \frametitle{Stuff still calculating}
+
+\#!/bin/bash\\
+multithread.pl 'pp2/*.seq' 'hhblits -i \$file -d /mnt/project/rost\_db/hhblits/uniprot20 -oa3m \$name.a3m' -cpu 4\\
+multithread.pl 'pp2/*.a3m' \$scriptdir/'addss.pl \$file' -cpu 4\\
+hhblitsdb.pl -o pp2/ -ia3m pp2/ -cpu 4
+
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Interface}
+  Each similar sequences search tool should return:\\
+  \begin{enumerate}
+   \item hit\_id: The id of the hit
+   \item hit\_value: A normalized score of the ident string
+   \item hit\_oder: wether the hit\_value is increasing or decreasing by quality
+   \item hit\_from: the starting position of the hit
+   \item hit\_to: the end position of the hit
+  \end{enumerate}
+
+\end{frame}
+
+\end{document}
