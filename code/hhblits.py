@@ -18,9 +18,9 @@ class HHBLITS():
   def __init__(self, hhblitsResults):
     out.writeDebug("Initalize hhblits alignment ...")      
     # self stuff
-    self.significant_hits = []
+    self.hits = []
     if hhblitsResults == '#unknown error':
-      return
+      return None
     # parse the hhblits results
     beginOfResults = False
     lines = hhblitsResults.split('\n')
@@ -34,17 +34,12 @@ class HHBLITS():
         break
       # skip all lines before the actual searching results begin
       if beginOfResults:
-        hit = line[4:34]
-        e_value = line[42:48]
-        hmm_template = line[87:]
-        e_value = parseEValue(e_value)
-        #add hits with significant e-Value
-        #TODO: add sequences and/or alignments
-        if e_value < minEValue:
-          print(hit)
-          self.significant_hits.append((hit, e_value))
-        else:
-          break
+        hit_id = line[4:34]
+        hit_e_value = line[42:48]
+        query_hit = line[88:]
+        hit_from, hit_to = query_hit.split('-')[:2]
+        hit_to = hit_to.split('(')[0]
+        self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False})
       else:
         if line.find("No Hit") != -1:
           beginOfResults = True
@@ -73,8 +68,8 @@ class HHBLITS():
       os.remove(outfile)
     except subprocess.CalledProcessError as err:
       out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, err.returncode ) )
-      hhblitsResults = open('stdoutput').read()
-      #hhblitsResults = '#unknown error'
+      #hhblitsResults = open('../../stdoutput').read()
+      hhblitsResults = ''
     if seq != seq_file:
       os.remove(seq_file)
     return HHBLITS(hhblitsResults)
