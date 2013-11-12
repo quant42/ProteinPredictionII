@@ -23,6 +23,8 @@ for line in open(mapping_file):
     up, eg = line.split()
     mapping_Uniprot_Entrez[up].append(eg)
 
+max_ann = 0
+prot = ''
 for k in uniprot:
     annotations = set([])
     for eg in mapping_Uniprot_Entrez[k]:
@@ -32,6 +34,10 @@ for k in uniprot:
         print "%s\tno-annotation"%k
     else:            
         print "%s\t%s"%(k,','.join(annotations))
+        if len(annotations) > max_ann:
+            max_ann = len(annotations)
+            prot = k
         pass
+print max_ann, prot
 
         
