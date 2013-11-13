@@ -1,0 +1,52 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+%\usepackage{default}
+
+\begin{document}
+
+\begin{frame}
+ \frametitle{ProteinPrediction II}
+ PPII Ex3 - Week 3\\
+ \hfill \\
+ Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Mapping IDs}
+ \begin{enumerate}
+ \item \url{http://www.uniprot.org/mapping/} maps 2813 Uniprot ACs to 2801 Entrez Gene IDs
+ \item python script \texttt{map.py} 
+ 	\begin{itemize}
+	 \item reads mapping and annotation files
+	 \item maps Uniprot AC to HPO term {\color{gray}\#or root node, but we have better annotations for everything}
+ 	\end{itemize}
+ \item output:\\
+ \begin{verbatim}
+ 	P00441  HP:0003394,HP:0002314,HP:0003202,HP:0010535
+ 	P31749  HP:0000400,HP:0004322,HP:0004325
+ 	P31213  HP:0000028,HP:0008736
+ 	...
+ \end{verbatim}
+\end{enumerate}
+%277 annotations for P21802; 226 non-redundant annotations for P21802
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{specific annotations}
+
+	\begin{itemize}
+	\item annotations are redundant (node and parents of annotation tree)
+	\item use function \texttt{has\_children} to prune annotations 
+\begin{verbatim}
+        P00441  HP:0003394,HP:0002314
+        P31749  HP:0000400,HP:0004325
+        P31213  HP:0008736
+        ...
+ \end{verbatim}
+	\end{itemize}
+
+ 
+\end{frame}
+
+\end{document}

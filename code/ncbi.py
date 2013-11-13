@@ -105,7 +105,7 @@ def getNcbiBlastResultString(rid):
   return html
 
 # this is a test if this is the main class
-if __name == "__main__":
+if __name__ == "__main__":
   print "sending request ..."
   request = sendNcbiBlastRequest("MALLAMHSWRWAAAAAAFEKRRHSAILIRPLVSVSGSGPQWRPHQLGALGTARAYQIPESLKSITWQRLGKGNSGQFLDAAKALQVWPLIEKRTCWHGHAGGGLHTDPKEGLKDVDTRKIIKAMLSYVWPKDRPDLRARVAISLGFLGGAKAMNIVVPFMFKYAVDSLNQMSGNMLNLSDAPNTVATMATAVLIGYGVSRAGAA")
   print "rid: %s rtoe: %s" % request
