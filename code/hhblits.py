@@ -34,9 +34,8 @@ class HHBLITS():
         break
       # skip all lines before the actual searching results begin
       if beginOfResults:
-        hit_id = line[4:34]
-        hit_e_value = line[42:48]
-        query_hit = line[88:]
+        items = line.split()
+        hit_id, hit_e_value, query_hit = items[1], items[3], items[9]
         hit_from, hit_to = query_hit.split('-')[:2]
         hit_to = hit_to.split('(')[0]
         self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False})
