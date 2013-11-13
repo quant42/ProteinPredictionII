@@ -14,28 +14,30 @@ def hpo_tree(filename):
         if line.startswith('id:'):
             node_id = line.split()[-1]
             tree[node_id] = {'childnodes': [],'parentnodes': [], 'visited': 0}
-            #TODO skip obsolete nodes
+        #TODO skip obsolete nodes
+        elif line.startswith('is_obsolete:'):
+            del tree[node_id]
+            
     for line in open(filename):
         if line.startswith('id:'):
             node_id = line.split()[-1]
-        if line.startswith('is_a:'):
+        elif line.startswith('is_a:') and node_id in tree:
             parentnode = line.split()[1]
             tree[node_id]['parentnodes'].append(parentnode)
             tree[parentnode]['childnodes'].append(node_id)
-            
     return tree
 
 def has_children(tree, node_id, set_of_children):
     for child in tree[node_id]['childnodes']:
         if child in set_of_children:
             return True
-        if has_children(tree, child, set_of_children):
+        elif has_children(tree, child, set_of_children):
             return True
     return False
 
 uniprot = {}
 hpo_tree = hpo_tree(hpo_file)
-
+    
 for line in open(fasta_file):
     if line.startswith('>'):
         uniprot[line.strip()[1:]] = True
