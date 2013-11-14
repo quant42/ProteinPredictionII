@@ -71,7 +71,7 @@ class HpoGraph():
   
   def getHpoSubGraph(self, idLst):
     
-    """ build a hpo sub tree containing only the id in the idList and there parents """
+    """ build a hpo sub tree containing only the id in the idList and their parents """
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph(None)
