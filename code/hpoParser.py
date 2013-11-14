@@ -75,9 +75,6 @@ class HpoGraph():
             self.hpoTermsDict[ element.split(" ")[0] ].childrens.append(key)
         else:
           self.hpoTermsDict[ node.is_a.split(" ")[0] ].childrens.append(key)
-      else:
-        # Note, that I asume, that there's only one root node, if not, the previous root is overwritten
-        self.root = node
   
   def __contains__(self, key):
     # if key is string check, if key is a key for an object
@@ -101,17 +98,19 @@ class HpoGraph():
         out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
       return None
   
-  def getHpoSubGraph(self, idLst):
+  def getHpoSubGraph(self, idLst, addAttr = None):
     
     """ build a hpo sub tree containing only the id in the idList and their parents """
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
-    ret.root = self.root
     # ok, put in the stuff in
     for id in idLst:
       term = self.getHpoTermById( id )
       while hasattr(term, "is_a"):
+        # add an attribute to the term?
+        if addAtr != None:
+          term.attributes.update( addAttr )
         # save previous
         ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
         # load next
@@ -125,6 +124,9 @@ class HpoGraph():
         # exit, if key already exists (even cylclic graphs don't matters then)
         if ret.hpoTermsDict.has_key( term.id ):
           break
+      # add an attribute to the term?
+      if addAtr != None:
+        term.attributes.update( addAttr )
       # add root
       ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
     # return subgraph
@@ -136,7 +138,6 @@ class HpoGraph():
 
     # create a new Hpo(Sub)Graph to return    
     ret = HpoGraph( None )
-    ret.root = self.root
     dict = {}
     dict.update(self.hpoTermsDict)
     dict.update(other.hpoTermsDict)
@@ -150,7 +151,6 @@ class HpoGraph():
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
-    ret.root = self.root
     dict = {}
     for key in self.hpoTermsDict.iterkeys():
       if other.hpoTermsDict.has_key( key ):
@@ -165,7 +165,7 @@ class HpoGraph():
     
     # create the list to return
     result = []
-    # remove all objects, that have leads available in the graph
+    # add all objects, that have leads available in the graph
     for key in self.hpoTermsDict:
       # check, if all children are not in the graph
       all = True
@@ -187,6 +187,40 @@ class HpoGraph():
       if c in self:
         lst.append( c )
     return lst
+  
+  def getParents(self, node):
+    
+    """ check each parent, if they are in the graph """
+    
+    lst = []
+    for c in node.is_a:
+      if c in self:
+        lst.append( c)
+    return lst
+  
+  def getRoot(self, multiRootLog = True):
+    
+    """ returns the root of this graph, write a log if there're more than one root """
+    
+    # create the list to return
+    result = []
+    # add all objects, that have don't have an is_a relation chip or which parents are not available in the graph
+    for key in self.hpoTermsDict:
+      # check, if parent is not in graph
+      all = True
+      if hasattr(self.hpoTermsDict[key], "is_a"):
+        for child in self.hpoTermsDict[key].is_a:
+          if child in self.hpoTermsDict:
+            all = False
+            break
+      if all:
+        result.append( key )
+    # check log
+    if multiRootLog and len(result) != 1:
+      out.writeWarning("WARNING: unexpected multiple (or none) roots in graph found!")
+    # return this
+    return result
+
   
 class HpoTerm():
   
