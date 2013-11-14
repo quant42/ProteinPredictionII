@@ -29,6 +29,10 @@ class HpoGraph():
       # file descriptor or hp term?
       if lines[0].startswith( "[Term]" ):
         # add a hpoterm by the hpoterms description
+        for line in lines:
+          # do nothing, if HpoTerm is_obsolete
+          if line.startswith('is_obsolete:'):
+            return
         term = HpoTerm( lines[1:] )
         self.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
       else:
@@ -44,7 +48,6 @@ class HpoGraph():
               setattr(self, attrName, [ getattr(self, attrName), attrVal ])
           else:
             setattr(self, attrName, attrVal)
-    
     # ok, parse the lines in the file
     try:
       f = file( hpoFile, "r" )
@@ -63,15 +66,39 @@ class HpoGraph():
       f.close()
     except Exception as e:
       out.writeError("Error parsing hpo file " + str( e.message ) + " " + str( e.args) )
+    # good and now create the relation ship childrens
+    for key in self.hpoTermsDict:
+      node = self.hpoTermsDict[key]
+      if hasattr(node, "is_a"):
+        if isinstance(node.is_a, list):
+          for element in node.is_a:
+            self.hpoTermsDict[ element.split(" ")[0] ].childrens.append(key)
+        else:
+          self.hpoTermsDict[ node.is_a.split(" ")[0] ].childrens.append(key)
+      else:
+        # Note, that I asume, that there's only one root node, if not, the previous root is overwritten
+        self.root = node
   
-  def getHpoTermById(self, id):
+  def __contains__(self, key):
+    # if key is string check, if key is a key for an object
+    if isinstance( key, str ):
+      return self.getHpoTermById( key, log = False ) != None
+    # if key is object, check if key is located in dict
+    else:
+      for iterKey in self.hpoTermsDict:
+        if self.hpoTermsDict( iterKey ) == key:
+          return True
+      return False
+  
+  def getHpoTermById(self, id, log = True):
     
     """ returns an hpo term by an hpo id """
     
     try:
       return self.hpoTermsDict[id.split(" ")[0]]
     except KeyError:
-      out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
+      if log:
+        out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
       return None
   
   def getHpoSubGraph(self, idLst):
@@ -80,6 +107,7 @@ class HpoGraph():
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
+    ret.root = self.root
     # ok, put in the stuff in
     for id in idLst:
       term = self.getHpoTermById( id )
@@ -108,6 +136,7 @@ class HpoGraph():
 
     # create a new Hpo(Sub)Graph to return    
     ret = HpoGraph( None )
+    ret.root = self.root
     dict = {}
     dict.update(self.hpoTermsDict)
     dict.update(other.hpoTermsDict)
@@ -121,6 +150,7 @@ class HpoGraph():
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
+    ret.root = self.root
     dict = {}
     for key in self.hpoTermsDict.iterkeys():
       if other.hpoTermsDict.has_key( key ):
@@ -128,6 +158,35 @@ class HpoGraph():
     ret.hpoTermsDict = dict
     # return subgraph
     return ret
+  
+  def getLeaves(self):
+    
+    """ return a list with the ids of all leaves of the graph  """
+    
+    # create the list to return
+    result = []
+    # remove all objects, that have leads available in the graph
+    for key in self.hpoTermsDict:
+      # check, if all children are not in the graph
+      all = True
+      for child in self.hpoTermsDict[key].childrens:
+        if child in self.hpoTermsDict:
+          all = False
+          break
+      if all:
+        result.append( key )
+    # return this
+    return result
+  
+  def getChildrens(self, node):
+    
+    """ check each children, if they are in the graph """
+    
+    lst = []
+    for c in node.childrens:
+      if c in self:
+        lst.append( c )
+    return lst
   
 class HpoTerm():
   
@@ -137,6 +196,10 @@ class HpoTerm():
     
     """ This initalize a hpoterm by the lines of an [Term] in an hpo file """
     
+    # add an array for the childrens
+    self.childrens = []
+    self.attributes = {}
+    # ok, parse the rest of the lines
     for line in hpoTermLines:
       # ok, thats a good line with a good description
       # parse for :
@@ -153,12 +216,13 @@ class HpoTerm():
 
 if __name__ == "__main__":
   graph = HpoGraph()
-  print dir(graph)
-  print dir(graph.getHpoTermById("HP:0000008"))
-  print graph.getHpoTermById("HP:0000008").is_a
-  print len(graph.hpoTermsDict)
+  print "HP:0000008" in graph.getLeaves()
+#  print dir(graph.getHpoTermById("HP:0000008"))
+#  print graph.getHpoTermById("HP:0000008").is_a
+#  print len(graph.hpoTermsDict)
   sub1 = graph.getHpoSubGraph(["HP:0000008"])
   sub2 = graph.getHpoSubGraph(["HP:0000119"])
-  print(sub1.hpoTermsDict)
-  print(sub2.hpoTermsDict)
-  print((sub1 - sub2).hpoTermsDict)
+#  print(sub1.hpoTermsDict)
+#  print(sub2.hpoTermsDict)
+  print((sub1 - sub2).getLeaves())
+#  print("HP:0000008" in sub1)
