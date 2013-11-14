@@ -16,17 +16,17 @@
  \frametitle{Mapping IDs}
  \begin{enumerate}
  \item \url{http://www.uniprot.org/mapping/} maps 2813 Uniprot ACs to 2801 Entrez Gene IDs
- \item python script \texttt{map.py} 
- 	\begin{itemize}
-	 \item reads mapping and annotation files
-	 \item maps Uniprot AC to HPO term {\color{gray}\#or root node, but we have better annotations for everything}
- 	\end{itemize}
+ \item python script \texttt{map.py}
+         \begin{itemize}
+         \item reads mapping and annotation files
+         \item maps Uniprot AC to HPO term {\color{gray}\#or root node, but we have better annotations for everything}
+         \end{itemize}
  \item output:\\
  \begin{verbatim}
- 	P00441  HP:0003394,HP:0002314,HP:0003202,HP:0010535
- 	P31749  HP:0000400,HP:0004322,HP:0004325
- 	P31213  HP:0000028,HP:0008736
- 	...
+         P00441 HP:0003394,HP:0002314,HP:0003202,HP:0010535
+         P31749 HP:0000400,HP:0004322,HP:0004325
+         P31213 HP:0000028,HP:0008736
+         ...
  \end{verbatim}
 \end{enumerate}
 %277 annotations for P21802; 226 non-redundant annotations for P21802
@@ -35,18 +35,43 @@
 \begin{frame}[fragile]
  \frametitle{specific annotations}
 
-	\begin{itemize}
-	\item annotations are redundant (node and parents of annotation tree)
-	\item use function \texttt{has\_children} to prune annotations 
+        \begin{itemize}
+        \item annotations are redundant (node and parents of annotation tree)
+        \item use function \texttt{has\_children} to prune annotations
 \begin{verbatim}
-        P00441  HP:0003394,HP:0002314
-        P31749  HP:0000400,HP:0004325
-        P31213  HP:0008736
+        P00441 HP:0003394,HP:0002314
+        P31749 HP:0000400,HP:0004325
+        P31213 HP:0008736
         ...
  \end{verbatim}
-	\end{itemize}
+        \end{itemize}
 
  
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Graph data structure}
+
+\begin{itemize}
+	\item Graph object and node \(= hpo term\) object
+	\item Graph can (only) be instanced by hpo file
+	\item Graph is represented by a python dictionary
+	\item SubGraphs by hpo ids may be created
+		\begin{verbatim}
+			Note, that at subGraphs don't change childnodes
+		\end{verbatim}
+	\item Functions \(until now\)
+		\begin{itemize}
+			\item +: get a subgraph which contains the nodoes from both graphs
+			\item -: get a subgraph that contains only the nodes that had been in both graphs
+			\item in: str: item with id, else node in graph
+			\item getHpoTermById: get an term object by an ids (None if not in subgraph, although it might be in graph)
+			\item getHpoSubGraph: initalize a subgraph by leafes
+			\item getLeafs: get all leafs of the subgraph
+			\item getChildrens: get the children of a node
+		\end{itemize}
+\end{itemize}
+
 \end{frame}
 
 \end{document}

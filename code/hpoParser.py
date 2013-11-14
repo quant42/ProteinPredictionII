@@ -168,6 +168,16 @@ class HpoGraph():
     # return this
     return result
   
+  def getChildrens(self, node):
+    
+    """ check each children, if they are in the graph """
+    
+    lst = []
+    for c in node.childrens:
+      if c in self:
+        lst.append( c )
+    return lst
+  
 class HpoTerm():
   
   """ This is a class representing a single hpoterm """
