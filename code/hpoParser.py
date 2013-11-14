@@ -11,9 +11,13 @@ class HpoGraph():
     """ initalize an hpo graph by an hpo file """
     
     # debug message
-    out.writeDebug( "parsing hpo file " + str( hpoFile ) )
+    if hpoFile != None:
+      out.writeDebug( "parsing hpo file " + str( hpoFile ) )
+    else:
+      out.writeDebug( "creating new subgraph!" )
     # init main class varibale
     self.hpoTermsDict = {}
+    self.isSubTree = hpoFile == None
     # if the file to parse is None, an empty HpoGraph will be returned
     if hpoFile == None:
       return
@@ -26,7 +30,7 @@ class HpoGraph():
       if lines[0].startswith( "[Term]" ):
         # add a hpoterm by the hpoterms description
         term = HpoTerm( lines[1:] )
-        self.hpoTermsDict.update( { term.id : term } )
+        self.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
       else:
         for line in lines:
           # ok, get the position of the :
@@ -67,6 +71,7 @@ class HpoGraph():
     try:
       return self.hpoTermsDict[id.split(" ")[0]]
     except KeyError:
+      out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
       return None
   
   def getHpoSubGraph(self, idLst):
@@ -74,18 +79,56 @@ class HpoGraph():
     """ build a hpo sub tree containing only the id in the idList and their parents """
     
     # create a new Hpo(Sub)Graph to return
-    ret = HpoGraph(None)
+    ret = HpoGraph( None )
     # ok, put in the stuff in
     for id in idLst:
-      self.hpoTermsDict.update( { id : self.getHpoTermById( id ) } )
+      term = self.getHpoTermById( id )
+      while hasattr(term, "is_a"):
+        # save previous
+        ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
+        # load next
+        if isinstance( term.is_a, list ):
+          # ok, there're more than one is_a attrs, so add both
+          restLst = term.is_a[1:]
+          term = self.getHpoTermById( term.is_a[0] )
+          idLst.extend( restLst )
+        else:
+          term = self.getHpoTermById( term.is_a )
+        # exit, if key already exists (even cylclic graphs don't matters then)
+        if ret.hpoTermsDict.has_key( term.id ):
+          break
+      # add root
+      ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
     # return subgraph
     return ret
   
   def __add__(self, other):
-    pass
-  def __sub__(self, other):
-    pass
+    
+    """ returns a subgraph that contains both nodes """
 
+    # create a new Hpo(Sub)Graph to return    
+    ret = HpoGraph( None )
+    dict = {}
+    dict.update(self.hpoTermsDict)
+    dict.update(other.hpoTermsDict)
+    ret.hpoTermsDict = dict
+    # return subgraph
+    return ret
+  
+  def __sub__(self, other):
+    
+    """ returns a subgraph that contains only those nodes availabe in both subgraphs """
+    
+    # create a new Hpo(Sub)Graph to return
+    ret = HpoGraph( None )
+    dict = {}
+    for key in self.hpoTermsDict.iterkeys():
+      if other.hpoTermsDict.has_key( key ):
+        dict.update( { key : self.hpoTermsDict[key] } )
+    ret.hpoTermsDict = dict
+    # return subgraph
+    return ret
+  
 class HpoTerm():
   
   """ This is a class representing a single hpoterm """
@@ -114,3 +157,8 @@ if __name__ == "__main__":
   print dir(graph.getHpoTermById("HP:0000008"))
   print graph.getHpoTermById("HP:0000008").is_a
   print len(graph.hpoTermsDict)
+  sub1 = graph.getHpoSubGraph(["HP:0000008"])
+  sub2 = graph.getHpoSubGraph(["HP:0000119"])
+  print(sub1.hpoTermsDict)
+  print(sub2.hpoTermsDict)
+  print((sub1 - sub2).hpoTermsDict)
