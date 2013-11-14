@@ -1,9 +1,5 @@
 #! /usr/bin/env python
 
-# TODO: remove obsolate
-# root node
-# leavs
-
 import out
 
 class HpoGraph():
@@ -33,6 +29,10 @@ class HpoGraph():
       # file descriptor or hp term?
       if lines[0].startswith( "[Term]" ):
         # add a hpoterm by the hpoterms description
+        for line in lines:
+          # do nothing, if HpoTerm is_obsolete
+          if line.startswith('is_obsolete:'):
+            return
         term = HpoTerm( lines[1:] )
         self.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
       else:
@@ -75,6 +75,8 @@ class HpoGraph():
             self.hpoTermsDict[ element.split(" ")[0] ].childrens.append(key)
         else:
           self.hpoTermsDict[ node.is_a.split(" ")[0] ].childrens.append(key)
+      else:
+        self.root = node
   
   def __contains__(self, key):
     # if key is string check, if key is a key for an object
@@ -104,6 +106,7 @@ class HpoGraph():
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
+    ret.root = self.root
     # ok, put in the stuff in
     for id in idLst:
       term = self.getHpoTermById( id )
@@ -132,6 +135,7 @@ class HpoGraph():
 
     # create a new Hpo(Sub)Graph to return    
     ret = HpoGraph( None )
+    ret.root = self.root
     dict = {}
     dict.update(self.hpoTermsDict)
     dict.update(other.hpoTermsDict)
@@ -145,6 +149,7 @@ class HpoGraph():
     
     # create a new Hpo(Sub)Graph to return
     ret = HpoGraph( None )
+    ret.root = self.root
     dict = {}
     for key in self.hpoTermsDict.iterkeys():
       if other.hpoTermsDict.has_key( key ):
@@ -153,7 +158,7 @@ class HpoGraph():
     # return subgraph
     return ret
   
-  def getLeafs(self):
+  def getLeaves(self):
     
     """ return a list with the ids of all leaves of the graph  """
     
@@ -192,6 +197,7 @@ class HpoTerm():
     
     # add an array for the childrens
     self.childrens = []
+    self.attributes = {}
     # ok, parse the rest of the lines
     for line in hpoTermLines:
       # ok, thats a good line with a good description
@@ -209,7 +215,7 @@ class HpoTerm():
 
 if __name__ == "__main__":
   graph = HpoGraph()
-  print "HP:0000008" in graph.getLeafs()
+  print "HP:0000008" in graph.getLeaves()
 #  print dir(graph.getHpoTermById("HP:0000008"))
 #  print graph.getHpoTermById("HP:0000008").is_a
 #  print len(graph.hpoTermsDict)
@@ -217,5 +223,5 @@ if __name__ == "__main__":
   sub2 = graph.getHpoSubGraph(["HP:0000119"])
 #  print(sub1.hpoTermsDict)
 #  print(sub2.hpoTermsDict)
-  print((sub1 - sub2).getLeafs())
+  print((sub1 - sub2).getLeaves())
 #  print("HP:0000008" in sub1)
