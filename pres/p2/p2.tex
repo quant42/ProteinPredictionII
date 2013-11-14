@@ -53,21 +53,21 @@
  \frametitle{Graph data structure}
 
 \begin{itemize}
-	\item Graph object and node \(= hpo term\) object
+	\item Graph object and node (= hpo term) object
 	\item Graph can (only) be instanced by hpo file
 	\item Graph is represented by a python dictionary
 	\item SubGraphs by hpo ids may be created
 		\begin{verbatim}
 			Note, that at subGraphs don't change childnodes
 		\end{verbatim}
-	\item Functions \(until now\)
+	\item Functions (until now)
 		\begin{itemize}
 			\item +: get a subgraph which contains the nodoes from both graphs
 			\item -: get a subgraph that contains only the nodes that had been in both graphs
 			\item in: str: item with id, else node in graph
-			\item getHpoTermById: get an term object by an ids (None if not in subgraph, although it might be in graph)
-			\item getHpoSubGraph: initalize a subgraph by leafes
-			\item getLeafs: get all leafs of the subgraph
+			\item getHpoTermById: get a term object by an id (None if not in subgraph, although it might be in graph)
+			\item getHpoSubGraph: initialize a subgraph by leaves
+			\item getLeaves: get all leaves of the subgraph
 			\item getChildrens: get the children of a node
 		\end{itemize}
 \end{itemize}

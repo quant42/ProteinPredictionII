@@ -1,5 +1,9 @@
 #! /usr/bin/env python
 
+# TODO: remove obsolate
+# root node
+# leavs
+
 import out
 
 class HpoGraph():
