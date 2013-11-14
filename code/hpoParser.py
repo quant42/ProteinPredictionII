@@ -76,6 +76,7 @@ class HpoGraph():
         else:
           self.hpoTermsDict[ node.is_a.split(" ")[0] ].childrens.append(key)
       else:
+        # Note, that I asume, that there's only one root node, if not, the previous root is overwritten
         self.root = node
   
   def __contains__(self, key):
