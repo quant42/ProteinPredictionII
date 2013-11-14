@@ -44,7 +44,6 @@ class HpoGraph():
               setattr(self, attrName, [ getattr(self, attrName), attrVal ])
           else:
             setattr(self, attrName, attrVal)
-    
     # ok, parse the lines in the file
     try:
       f = file( hpoFile, "r" )
@@ -63,15 +62,36 @@ class HpoGraph():
       f.close()
     except Exception as e:
       out.writeError("Error parsing hpo file " + str( e.message ) + " " + str( e.args) )
+    # good and now create the relation ship childrens
+    for key in self.hpoTermsDict:
+      node = self.hpoTermsDict[key]
+      if hasattr(node, "is_a"):
+        if isinstance(node.is_a, list):
+          for element in node.is_a:
+            self.hpoTermsDict[ element.split(" ")[0] ].childrens.append(key)
+        else:
+          self.hpoTermsDict[ node.is_a.split(" ")[0] ].childrens.append(key)
   
-  def getHpoTermById(self, id):
+  def __contains__(self, key):
+    # if key is string check, if key is a key for an object
+    if isinstance( key, str ):
+      return self.getHpoTermById( key, log = False ) != None
+    # if key is object, check if key is located in dict
+    else:
+      for iterKey in self.hpoTermsDict:
+        if self.hpoTermsDict( iterKey ) == key:
+          return True
+      return False
+  
+  def getHpoTermById(self, id, log = True):
     
     """ returns an hpo term by an hpo id """
     
     try:
       return self.hpoTermsDict[id.split(" ")[0]]
     except KeyError:
-      out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
+      if log:
+        out.writeLog( "KeyError getting term for id: \"" + str( id ) + "\"! => returning None!" )
       return None
   
   def getHpoSubGraph(self, idLst):
@@ -129,6 +149,25 @@ class HpoGraph():
     # return subgraph
     return ret
   
+  def getLeafs(self):
+    
+    """ return a list with the ids of all leaves of the graph  """
+    
+    # create the list to return
+    result = []
+    # remove all objects, that have leads available in the graph
+    for key in self.hpoTermsDict:
+      # check, if all children are not in the graph
+      all = True
+      for child in self.hpoTermsDict[key].childrens:
+        if child in self.hpoTermsDict:
+          all = False
+          break
+      if all:
+        result.append( key )
+    # return this
+    return result
+  
 class HpoTerm():
   
   """ This is a class representing a single hpoterm """
@@ -137,6 +176,9 @@ class HpoTerm():
     
     """ This initalize a hpoterm by the lines of an [Term] in an hpo file """
     
+    # add an array for the childrens
+    self.childrens = []
+    # ok, parse the rest of the lines
     for line in hpoTermLines:
       # ok, thats a good line with a good description
       # parse for :
@@ -153,12 +195,13 @@ class HpoTerm():
 
 if __name__ == "__main__":
   graph = HpoGraph()
-  print dir(graph)
-  print dir(graph.getHpoTermById("HP:0000008"))
-  print graph.getHpoTermById("HP:0000008").is_a
-  print len(graph.hpoTermsDict)
+  print "HP:0000008" in graph.getLeafs()
+#  print dir(graph.getHpoTermById("HP:0000008"))
+#  print graph.getHpoTermById("HP:0000008").is_a
+#  print len(graph.hpoTermsDict)
   sub1 = graph.getHpoSubGraph(["HP:0000008"])
   sub2 = graph.getHpoSubGraph(["HP:0000119"])
-  print(sub1.hpoTermsDict)
-  print(sub2.hpoTermsDict)
-  print((sub1 - sub2).hpoTermsDict)
+#  print(sub1.hpoTermsDict)
+#  print(sub2.hpoTermsDict)
+  print((sub1 - sub2).getLeafs())
+#  print("HP:0000008" in sub1)
