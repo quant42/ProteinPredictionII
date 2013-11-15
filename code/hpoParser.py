@@ -225,7 +225,7 @@ class HpoGraph():
     print "root: " + str(result)
     return result
   
-  def writeSvgImage(self, fileName = "graph.svg", addAttrs = False, xGap = 200, yGap = 120, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "black"):
+  def writeSvgImage(self, fileName = "graph.svg", addAttrs = False, xGap = 200, yGap = 120, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
     
     """ create an svg image of this graph for better discussions """
     
@@ -240,15 +240,16 @@ class HpoGraph():
         text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, y + 45, color, attr )
       return text
     def calcNodePos(lst, node, w, h, wE, hE):
-      i, j = -1, -1
+      i, j, k = -1, -1, -1
       for l in lst:
         i += 1
         try:
           j = l.index(node)
+          k = len( l )
           break
         except ValueError:
           pass
-      return [ j * wE, i * hE ]
+      return [ j * w / k + (w / k - wE) / 2, i * hE ]
     # calculate the level of all nodes
     lvl = [ self.getRoot( multiRootLog = False ) ]
     def extendLvls(self, lvl):
