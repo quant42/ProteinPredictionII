@@ -272,7 +272,6 @@ class HpoGraph():
                   pass
               if stop:
                 break
-            print appended
             if len( appended ) <= 1:
               nextLvl.extend( [ child ] )
       lvl.extend( [ nextLvl ] )
@@ -350,5 +349,5 @@ if __name__ == "__main__":
 #  g = (sub1 - sub2)
 #  print g.getRoot()
 #  print g.hpoTermsDict
-  graph.getHpoSubGraph(["HP:0000130"]).writeSvgImage()
+  graph.writeSvgImage()
 #  print("HP:0000008" in sub1)
