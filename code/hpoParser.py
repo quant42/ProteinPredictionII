@@ -109,7 +109,7 @@ class HpoGraph():
       term = self.getHpoTermById( id )
       while hasattr(term, "is_a"):
         # add an attribute to the term?
-        if addAtr != None:
+        if addAttr != None:
           term.attributes.update( addAttr )
         # save previous
         ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
@@ -125,7 +125,7 @@ class HpoGraph():
         if ret.hpoTermsDict.has_key( term.id ):
           break
       # add an attribute to the term?
-      if addAtr != None:
+      if addAttr != None:
         term.attributes.update( addAttr )
       # add root
       ret.hpoTermsDict.update( { term.id.split(" ")[0] : term } )
@@ -170,7 +170,7 @@ class HpoGraph():
       # check, if all children are not in the graph
       all = True
       for child in self.hpoTermsDict[key].childrens:
-        if child in self.hpoTermsDict:
+        if child in self:
           all = False
           break
       if all:
@@ -182,6 +182,8 @@ class HpoGraph():
     
     """ check each children, if they are in the graph """
     
+    if isinstance(node, str):
+      node = self.getHpoTermById( node )
     lst = []
     for c in node.childrens:
       if c in self:
@@ -192,10 +194,17 @@ class HpoGraph():
     
     """ check each parent, if they are in the graph """
     
+    if isinstance(node, str):
+      node = self.getHpoTermById( node )
     lst = []
-    for c in node.is_a:
-      if c in self:
-        lst.append( c)
+    if hasattr(node, "is_a"):
+      if isinstance(node.is_a, list):
+        for c in node.is_a:
+          if c in self:
+            lst.append( c.split(" ")[0] )
+      else:
+        if node.is_a in self:
+          lst.append( node.is_a.split(" ")[0] )
     return lst
   
   def getRoot(self, multiRootLog = True):
@@ -207,20 +216,100 @@ class HpoGraph():
     # add all objects, that have don't have an is_a relation chip or which parents are not available in the graph
     for key in self.hpoTermsDict:
       # check, if parent is not in graph
-      all = True
-      if hasattr(self.hpoTermsDict[key], "is_a"):
-        for child in self.hpoTermsDict[key].is_a:
-          if child in self.hpoTermsDict:
-            all = False
-            break
-      if all:
+      if self.getParents( key ) == []:
         result.append( key )
     # check log
     if multiRootLog and len(result) != 1:
-      out.writeWarning("WARNING: unexpected multiple (or none) roots in graph found!")
+      out.writeWarning("WARNING: found unexpected multiple (or none) roots in graph!")
     # return this
+    print "root: " + str(result)
     return result
-
+  
+  def writeSvgImage(self, fileName = "graph.svg", addAttrs = False, xGap = 200, yGap = 120, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "black"):
+    
+    """ create an svg image of this graph for better discussions """
+    
+    # helper functions
+    def getCircleCode(x, y, r, stroke, strokeWidth, fill):
+      return "<circle cx=\"{}\" cy=\"{}\" r=\"{}\" stroke=\"{}\" stroke-width=\"{}\" fill=\"{}\" />\n".format( x + 20, y + 20, r, stroke, strokeWidth, fill )
+    def getLineCode(x1, y1, x2, y2, lineColor, lineWidth):
+      return "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" style=\"stroke: {}; stroke-width: {}\" />\n".format( x1 + 20, y1 + 20, x2 + 20, y2 + 20, lineColor, lineWidth )
+    def getStrCode(x, y, id, attr, attrAppend, color):
+      text = "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 18px\">{}</text>\n".format( x + 30, y + 20, color, id, attr )
+      if attrAppend:
+        text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, y + 45, color, attr )
+      return text
+    def calcNodePos(lst, node, w, h, wE, hE):
+      i, j = -1, -1
+      for l in lst:
+        i += 1
+        try:
+          j = l.index(node)
+          break
+        except ValueError:
+          pass
+      return [ j * wE, i * hE ]
+    # calculate the level of all nodes
+    lvl = [ self.getRoot( multiRootLog = False ) ]
+    def extendLvls(self, lvl):
+      nextLvl = []
+      for cLvlNode in lvl[-1:][0]:
+        for child in self.getChildrens( cLvlNode ):
+          if len( self.getParents( child ) ) <= 1:
+            nextLvl.extend( [ child ] )
+          else:
+            # ok, multiroot, this makes it more difficult
+            appended = self.getParents( child )
+            stop = False
+            for l in lvl:
+              for c in l:
+                if c == cLvlNode:
+                  stop = True
+                  break
+                try:
+                  appended.remove( c )
+                except ValueError:
+                  pass
+              if stop:
+                break
+            print appended
+            if len( appended ) <= 1:
+              nextLvl.extend( [ child ] )
+      lvl.extend( [ nextLvl ] )
+      return len( nextLvl ) != 0
+    while extendLvls(self, lvl):
+      pass
+    lvl = lvl[:-1]
+    # get some data
+    maxV = 0
+    for l in lvl:
+      maxV = max( maxV, len( l ) )
+    w, h = xGap * maxV, yGap * len( lvl )
+    # now write that (header) to the file
+    f = open (fileName, "w+")
+    f.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+    f.write("<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" baseProfile=\"full\" width=\"{}px\" height=\"{}px\" viewBox=\"0 0 {} {}\">\n".format( w, h, w, h ) )
+    # first lines
+    for l in lvl[1:]:
+      for n in l:
+        n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
+        for p in self.getParents( n ):
+          n2 = calcNodePos(lvl, p, w, h, xGap, yGap)
+          f.write( getLineCode(n1[0], n1[1], n2[0], n2[1], lineColor, lineWidth ) )
+    # second text
+    for l in lvl:
+      for n in l:
+        n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
+        n_ = self.getHpoTermById( n )
+        f.write( getStrCode(n1[0], n1[1], n_.id, n_.attributes, addAttrs, textColor) )
+    # last points
+    for l in lvl:
+      for n in l:
+        n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
+        f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFill) )
+    # svg eof
+    f.write("</svg>\n")
+    f.close()
   
 class HpoTerm():
   
@@ -258,5 +347,8 @@ if __name__ == "__main__":
   sub2 = graph.getHpoSubGraph(["HP:0000119"])
 #  print(sub1.hpoTermsDict)
 #  print(sub2.hpoTermsDict)
-  print((sub1 - sub2).getLeaves())
+#  g = (sub1 - sub2)
+#  print g.getRoot()
+#  print g.hpoTermsDict
+  graph.getHpoSubGraph(["HP:0000130"]).writeSvgImage()
 #  print("HP:0000008" in sub1)
