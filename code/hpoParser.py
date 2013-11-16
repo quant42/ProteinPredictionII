@@ -314,6 +314,20 @@ class HpoGraph():
     f.write("</svg>\n")
     f.close()
   
+  def clearAttr( self ):
+    
+    """ Function for clearing all hpoTerm attributes of this subtree """
+    
+    for key in self.hpoTermsDict:
+      self.hpoTermsDict[key].attributes = {}
+  
+  def addAttr( self, dict ):
+    
+    """ Add an attribute to all HpoTerms of this subtree """
+    
+    for key in self.hpoTermsDict:
+      self.hpoTermsDict[key].attributes.update( dict )
+  
 class HpoTerm():
   
   """ This is a class representing a single hpoterm """
