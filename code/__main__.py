@@ -13,7 +13,6 @@ try:
   group.add_argument("-s", "--seq", action="store", dest="sequence", type=str, help="The seuqence in one letter code to predict the function for!")
   group.add_argument("-f", "--file", action="store", dest="fastaFile", type=str, help="A fasta file containing the protein sequences to predict there functions!")
   parser.add_argument("--svg", action="store_true", dest="createSvgImage", help="whether to create a svg image of the graph!")
-  parser.add_argument("-d", "--debug", dest="debugFile", type=str, default=None, required=False, help="The debug file to write the debug/log/error messages to! (default: stderr)")
   parser.add_argument("-v", "--verbose", dest="verbosity", type=int, default=0, required=False, help="set the verbosity of streams as sum 1=Message, 2=Debug, 4=Log, 8=Warning, 16=Error, 32=Output!")
   parser.add_argument("-w", "--outFormat", dest="outputFormat", type=str, choices=["bash", "plain", "html"], default="bash", required=False, help="set the output format to bash, plain or html!")
   parser.add_argument("-p", "--hpoFile", dest="hpoFile", type=str, default="../data/hp.obo", required=False, help="The path to the file with the current hpo definition!")
@@ -39,8 +38,16 @@ try:
     out.writeLog("missing hpoFile! Try standard hpoFile in the data directory")
     hpoGraph = hpoParser.HpoGraph()
   
+  # init the hpo-identifier dict
+  uni2hpoDict = {}
+  f = open( args.uni2hpo, "r" )
+  for line in f:
+    line = line.strip()
+    uni2hpoDict.update( { line.split("\t")[0] : line.split("\t")[1].split(",") } )
+  f.close()
+  
   # prediction method
-  def predictSequence(args, hpoGraph, name="Sequence", seq=""):
+  def predictSequence(args, hpoGraph, uni2hpoDict, name="Sequence", seq=""):
     # ok, do the whole thing
     try:
       # debug msg
@@ -50,30 +57,25 @@ try:
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile)
       for hit in blastResults.hits:
         out.writeDebug( "Blast: found hit: " + str( hit ) )
-      hhblitsResults = [] # TODO
-      for hit in hhblitsResults.htis:
+      class Stuff():
+        hits = []
+      hhblitsResults = Stuff() # TODO
+      for hit in hhblitsResults.hits:
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
       # now get the hpo-Identifiers for each similar sequence
       f = open( args.uni2hpo, "r" )
-      for line in f:
-        line = line.strip()
-        for hit in blastResults.hits:
-          if line.split("\t")[0] ==  hit[ 'hit_id' ]:
-            hit.update( { "hpoTerms" : line.split("\t")[1].split(",") } )
-            out.writeDebug( "found hpoTerms for " + str( hit[ 'hit_id' ] ) + ": " + str( hit[ 'hpoTerms' ] ) )
-        for hit in hhblitsResults.hits:
-          if line.split("\t")[0] ==  hit[ 'hit_id' ]:
-            hit.update( { "hpoTerms" : line.split("\t")[1].split(",") } )
-            out.writeDebug( "found hpoTerms for " + str( hit[ 'hit_id' ] ) + ": " + str( hit[ 'hpoTerms' ] ) )
-      f.close()
-      
-      # check warning
       for hit in blastResults.hits:
-        if not hit.has_key( "hpoTerms" ):
+        try:
+          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
+          hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
+        except KeyError:
+          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       for hit in hhblitsResults.hits:
-        if not hit.has_key( "hpoTerms" ):
+        try:
+          hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
+        except KeyError:
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       
       # build and merge trees
@@ -97,7 +99,7 @@ try:
       
       # do the prediciton
       out.writeDebug("Run main prediction!")
-      
+      # TODO
       
       # svg image desired?
       if args.createSvgImage:
@@ -118,11 +120,11 @@ try:
   
   # ok, do the whole thing
   if args.sequence != None:
-    predictSequence(args, hpoGraph, seq=args.sequence)
+    predictSequence(args, hpoGraph, uni2hpoDict, seq=args.sequence)
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, hpoGraph, name=record.id, seq=record.seq)
+      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=record.seq)
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")
