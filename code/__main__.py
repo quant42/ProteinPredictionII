@@ -69,8 +69,10 @@ try:
       # build and merge trees
       out.writeDebug("Build and merge tree for similar sequences!")
       graph = None
+      hit_id = 0
       for hit in blastResults.hits:
-        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], hit )
+        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
+        hit_id += 1
         if graph == None:
           graph = subtree
         else:
