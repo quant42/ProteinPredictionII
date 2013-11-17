@@ -13,8 +13,6 @@ class HpoGraph():
     # debug message
     if hpoFile != None:
       out.writeDebug( "parsing hpo file " + str( hpoFile ) )
-    else:
-      out.writeDebug( "creating new subgraph!" )
     # init main class varibale
     self.hpoTermsDict = {}
     self.isSubTree = hpoFile == None
@@ -222,7 +220,6 @@ class HpoGraph():
     if multiRootLog and len(result) != 1:
       out.writeWarning("WARNING: found unexpected multiple (or none) roots in graph!")
     # return this
-    print "root: " + str(result)
     return result
   
   def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
