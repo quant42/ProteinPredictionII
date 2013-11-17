@@ -57,9 +57,7 @@ try:
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile)
       for hit in blastResults.hits:
         out.writeDebug( "Blast: found hit: " + str( hit ) )
-      class Stuff():
-        hits = []
-      hhblitsResults = Stuff() # TODO
+      hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=args.hhblitsDbFile)
       for hit in hhblitsResults.hits:
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
@@ -80,8 +78,7 @@ try:
       
       # build and merge trees
       out.writeDebug("Build and merge tree for similar sequences!")
-      graph = None
-      hit_id = 0
+      graph, hit_id = None, 0
       for hit in blastResults.hits:
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
