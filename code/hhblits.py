@@ -2,13 +2,15 @@
 
 # ===================================================================
 # This class provides functions for searching for similar proteins
-# with the hhblits tool. Therefore hhblits must be installed locally.
+# with the hhblits tool. Therefore hhblits must be installed locally
+# and HHLIB environment variable set to a directory containing 
+# hh data, hh lib and hh scripts.
 # Call HHBLITS.localHHBLITS(seq="", # database="") to do the hhblits
 # search. You will get a class which has an attribute significant_hits.
 # ===================================================================
 
 import out, subprocess, re, os, math
-minEValue = 0.01
+minEValue = 0.1
 class HHBLITS():
   
   """ A basic hmmblits class """
@@ -34,6 +36,9 @@ class HHBLITS():
         break
       # skip all lines before the actual searching results begin
       if beginOfResults:
+        if line.startswith('No 1'):
+          #end of results
+          break
         items = line.split()
         hit_id, hit_e_value, query_hit = items[1], items[3], items[9]
         hit_from, hit_to = query_hit.split('-')[:2]
@@ -46,13 +51,12 @@ class HHBLITS():
     
   
   @staticmethod
-  def localHHBLITS(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "/mnt/project/rost_db/data/hhblits/uniprot20_02Sep11"):
+  def localHHBLITS(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/PP2db"):
     import time
     out.writeDebug("Do a local hhblits search for {} in {}".format( seq, database ) )
     time_stamp = str(int(time.time()))
     seq_file = ''
     if re.match('^[A-Z]*$',seq):
-      
       seq_file = 'hhblits_input_'+time_stamp
       fh = open(seq_file,'w')
       fh.write(seq)
@@ -60,26 +64,18 @@ class HHBLITS():
     else:
       seq_file = seq
     outfile = 'hhblits_'+time_stamp+'.out'
-    command = "hhblits -i {} -o {} -d {} -e {}".format(seq_file, outfile, database, minEValue)
+    command = "hhblits -i {} -o {} -d {} -e {} -n 1".format(seq_file, outfile, database, minEValue)
     try:
-      hhblitsResults = subprocess.check_output(command, shell = True)
+      hhblitsResults = subprocess.check_output(command, stderr=subprocess.STDOUT, shell = True)
       hhblitsResults = open(outfile).read()
       os.remove(outfile)
     except subprocess.CalledProcessError as err:
-      out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, err.returncode ) )
-      #hhblitsResults = open('../../stdoutput').read()
+      out.writeLog("Return code for hhblits search {} in {} returned with exit code {}!".format( seq, database, err.returncode ) )
       hhblitsResults = ''
     if seq != seq_file:
       os.remove(seq_file)
     return HHBLITS(hhblitsResults)
 
-def parseEValue(e_value):
-# translate evalue text into float
-  if 'E' in e_value:
-    base, exponent = e_value.split('E')
-    return float(base)*math.pow(10,int(exponent))
-  else:
-    return float(e_value)
 
 # if this is the main method, perform some basic tests
 if __name__ == "__main__":
