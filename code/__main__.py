@@ -68,10 +68,10 @@ try:
           out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
         except KeyError:
-          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       for hit in hhblitsResults.hits:
         try:
+          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
         except KeyError:
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
