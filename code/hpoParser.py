@@ -225,7 +225,7 @@ class HpoGraph():
     print "root: " + str(result)
     return result
   
-  def writeSvgImage(self, fileName = "graph.svg", addAttrs = False, xGap = 200, yGap = 120, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
+  def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
     
     """ create an svg image of this graph for better discussions """
     
@@ -237,7 +237,10 @@ class HpoGraph():
     def getStrCode(x, y, id, attr, attrAppend, color):
       text = "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 18px\">{}</text>\n".format( x + 30, y + 20, color, id, attr )
       if attrAppend:
-        text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, y + 45, color, attr )
+        c = y + 42
+        for key in attr:
+          text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, c, color, str( key ) + ": " +  str( attr[ key ] ) )
+          c += 18
       return text
     def calcNodePos(lst, node, w, h, wE, hE):
       i, j, k = -1, -1, -1
@@ -311,6 +314,20 @@ class HpoGraph():
     f.write("</svg>\n")
     f.close()
   
+  def clearAttr( self ):
+    
+    """ Function for clearing all hpoTerm attributes of this subtree """
+    
+    for key in self.hpoTermsDict:
+      self.hpoTermsDict[key].attributes = {}
+  
+  def addAttr( self, dict ):
+    
+    """ Add an attribute to all HpoTerms of this subtree """
+    
+    for key in self.hpoTermsDict:
+      self.hpoTermsDict[key].attributes.update( dict )
+  
 class HpoTerm():
   
   """ This is a class representing a single hpoterm """
@@ -343,12 +360,18 @@ if __name__ == "__main__":
 #  print dir(graph.getHpoTermById("HP:0000008"))
 #  print graph.getHpoTermById("HP:0000008").is_a
 #  print len(graph.hpoTermsDict)
-  sub1 = graph.getHpoSubGraph(["HP:0000008"])
-  sub2 = graph.getHpoSubGraph(["HP:0000119"])
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {1:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {2:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {3:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {4:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {5:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {6:0})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"], {7:0})
+  sub2 = graph.getHpoSubGraph(["HP:0009979"], {2:3})
 #  print(sub1.hpoTermsDict)
 #  print(sub2.hpoTermsDict)
 #  g = (sub1 - sub2)
 #  print g.getRoot()
 #  print g.hpoTermsDict
-  graph.writeSvgImage()
+  (sub1 + sub2).writeSvgImage(addAttrs = True)
 #  print("HP:0000008" in sub1)
