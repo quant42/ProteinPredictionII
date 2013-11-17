@@ -5,30 +5,31 @@ import out
 try:
   # import stuff
   #from Bio import SeqIO
-  import argparse
-  import blast
+  import argparse, blast, hhblits, map, hpoParser
   
   # do commandline parsing
-  parser = argparse.ArgumentParser(description='Program to predict the function of proteins.')
-  parser.add_argument("-k", "--k-nearest", action="store", dest="kNearest", default=5)
-  parser.add_argument("-s", "--seq", action="store", dest="seq")
-  parser.add_argument("-m", "--supressMessage", action="store_true", dest="supMsg")
-  parser.add_argument("-d", "--supressDebug", action="store_true", dest="supDbg")
-  parser.add_argument("-l", "--supressLog", action="store_true", dest="supLog")
-  parser.add_argument("-w", "--supressWarning", action="store_true", dest="supWarn")
-  parser.add_argument("-e", "--supressError", action="store_true", dest="supErr")
-  parser.add_argument("-o", "--supressOutput", action="store_true", dest="supOut")
-  parser.add_argument("-f", "--outputFormat", action="store", dest="outForm", default="bash")
+  # "", "", action=[store, store_true], dest=varname, type=[int, str, ...], help=..., choices=[0, 1, 2], default=0, required=False/True
+  # nargs="+" (arg must be giveb), "?"(arg optional)
+  # metavar='N' extended argument
+  # group = parser.add_mutually_exclusive_group()
+  # group.add_argument("-v", "--verbose", action="store_true")
+  # group.add_argument("-q", "--quiet", action="store_true")
+  # 
+  # 
+  parser = argparse.ArgumentParser(description='This program should predict the function of proteins.')
+  group = parser.add_mutally_exclusive_group()
+  group.add_argument("-s", "--seq", action="store", dest="sequence", type=str, help="The seuqence in one letter code to predict the function for!")
+  group.add_argument("-f", "--file", action="store", dest="fastaFile", type=str, help="A fasta file containing the protein sequences to predict there functions!")
   args = parser.parse_args()
   
   # init output
-  out.supressMessage = args.supMsg
-  out.supressDebug = args.supDbg
-  out.supressLog = args.supLog
-  out.supressWarning = args.supWarn
-  out.supressError = args.supErr
-  out.supressOutput = args.supOut
-  out.outputFormat = args.outForm
+#  out.supressMessage = args.supMsg
+#  out.supressDebug = args.supDbg
+#  out.supressLog = args.supLog
+#  out.supressWarning = args.supWarn
+#  out.supressError = args.supErr
+#  out.supressOutput = args.supOut
+#  out.outputFormat = args.outForm
   
   # do stuff
   blastObj = blast.Blast.localBlast(seq=args.seq)
