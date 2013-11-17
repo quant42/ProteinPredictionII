@@ -50,6 +50,9 @@ try:
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile)
       for hit in blastResults.hits:
         out.writeDebug( "Blast: found hit: " + str( hit ) )
+      hhblitsResults = [] # TODO
+      for hit in hhblitsResults.htis:
+        out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
       # now get the hpo-Identifiers for each similar sequence
       f = open( args.uni2hpo, "r" )
@@ -59,10 +62,17 @@ try:
           if line.split("\t")[0] ==  hit[ 'hit_id' ]:
             hit.update( { "hpoTerms" : line.split("\t")[1].split(",") } )
             out.writeDebug( "found hpoTerms for " + str( hit[ 'hit_id' ] ) + ": " + str( hit[ 'hpoTerms' ] ) )
+        for hit in hhblitsResults.hits:
+          if line.split("\t")[0] ==  hit[ 'hit_id' ]:
+            hit.update( { "hpoTerms" : line.split("\t")[1].split(",") } )
+            out.writeDebug( "found hpoTerms for " + str( hit[ 'hit_id' ] ) + ": " + str( hit[ 'hpoTerms' ] ) )
       f.close()
       
       # check warning
       for hit in blastResults.hits:
+        if not hit.has_key( "hpoTerms" ):
+          out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
+      for hit in hhblitsResults.hits:
         if not hit.has_key( "hpoTerms" ):
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       
@@ -71,6 +81,13 @@ try:
       graph = None
       hit_id = 0
       for hit in blastResults.hits:
+        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
+        hit_id += 1
+        if graph == None:
+          graph = subtree
+        else:
+          graph += subtree
+      for hit in hhblitsResults.hits:
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         if graph == None:
