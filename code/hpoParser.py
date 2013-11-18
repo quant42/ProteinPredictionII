@@ -236,7 +236,7 @@ class HpoGraph():
       if attrAppend:
         c = y + 42
         for key in attr:
-          text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, c, color, str( key ) + ": " +  str( attr[ key ] ) )
+          text += "<text x=\"{}\" y=\"{}\" fill=\"{}\" style=\"font-size: 16px\">{}</text>\n".format( x + 35, c, color, str( key ) + ": [ met:" + str( attr[ key ][ "method" ] ) + ", id:" +  str( attr[ key ][ "hit_id" ] ) + ", val:" + str( attr[ key ][ "hit_value" ] ) + " ]" )
           c += 18
       return text
     def calcNodePos(lst, node, w, h, wE, hE):
