@@ -121,7 +121,7 @@ try:
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=record.seq)
+      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=str(record.seq))
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")
