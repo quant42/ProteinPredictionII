@@ -34,7 +34,7 @@ class Blast():
       elif begin:
         query_id, hit_id, perc_identity, alignment_length, mismatches, gap_openings, q_start, q_end, hit_from, hit_to, hit_e_value, bit_score = line.split('\t')
 
-        self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False})
+        self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False, 'method':'blast'})
     
   @staticmethod
   def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta"):

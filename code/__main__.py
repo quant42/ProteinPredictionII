@@ -56,11 +56,9 @@ try:
       # ok, first of all, get similar sequences!
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile)
       for hit in blastResults.hits:
-        hit.update( { "method" : "blast" } )
         out.writeDebug( "Blast: found hit: " + str( hit ) )
       hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=args.hhblitsDbFile)
       for hit in hhblitsResults.hits:
-        hit.update( { "method" : "hhblits" } )
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
       # now get the hpo-Identifiers for each similar sequence
