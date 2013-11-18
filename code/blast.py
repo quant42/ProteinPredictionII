@@ -39,7 +39,7 @@ class Blast():
   @staticmethod
   def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta"):
     out.writeDebug( "Do a local blast search for {} in {}".format( seq, database ) )
-    blastResults = commands.getstatusoutput( "echo \"%s\" | blast2 -p blastp -d ../data/genes_UniProt.fasta -N -m 9" % seq )
+    blastResults = commands.getstatusoutput( "echo \"{}\" | blast2 -p blastp -d {} -N -m 9".format( seq, database ) )
     if blastResults[0] != 0:
       out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, blastResults[0] ) )
     return Blast( blastResults[1] )
