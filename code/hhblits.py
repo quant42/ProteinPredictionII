@@ -59,7 +59,7 @@ class HHBLITS():
     if re.match('^[A-Z]*$',seq):
       seq_file = 'hhblits_input_'+time_stamp
       fh = open(seq_file,'w')
-      fh.write(seq)
+      fh.write('>no_header\n'+seq)
       fh.close()
     else:
       seq_file = seq
