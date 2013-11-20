@@ -222,7 +222,7 @@ class HpoGraph():
     # return this
     return result
   
-  def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleFill = "red", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
+  def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleFillFalse = "red", circleFillTrue = "green", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
     
     """ create an svg image of this graph for better discussions """
     
@@ -306,7 +306,11 @@ class HpoGraph():
     for l in lvl:
       for n in l:
         n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
-        f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFill) )
+        n_ = self.getHpoTermById( n )
+        if n_.accepted:
+          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFillTrue) )
+        else:
+          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFillFalse) )
     # svg eof
     f.write("</svg>\n")
     f.close()
@@ -317,6 +321,7 @@ class HpoGraph():
     
     for key in self.hpoTermsDict:
       self.hpoTermsDict[key].attributes = {}
+      self.hpoTermsDict[key].accepted = False
   
   def addAttr( self, dict ):
     
@@ -324,6 +329,16 @@ class HpoGraph():
     
     for key in self.hpoTermsDict:
       self.hpoTermsDict[key].attributes.update( dict )
+  
+  def getAcceptedNodes( self ):
+    
+    """ returns all accepted nodes from this graph """
+    
+    nodes = []
+    for node in self.hpoTermsDict:
+      if node.accepted:
+        nodes.append( node )
+    return nodes
   
 class HpoTerm():
   
@@ -336,6 +351,7 @@ class HpoTerm():
     # add an array for the childrens
     self.childrens = []
     self.attributes = {}
+    self.accepted = False
     # ok, parse the rest of the lines
     for line in hpoTermLines:
       # ok, thats a good line with a good description
