@@ -98,7 +98,7 @@ try:
       out.writeDebug("Run main prediction!")
       # TODO: implement a better predictor - for example with an neuronal network (pyBrain etc.)
       # accept those with more than two results
-      if graph != None
+      if graph != None:
         for node in graph.hpoTermsDict:
           if len( graph.hpoTermsDict[ node ].attributes ) > 2:
             graph.hpoTermsDict[ node ].accepted = True
