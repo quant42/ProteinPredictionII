@@ -13,6 +13,35 @@
 \end{frame}
 
 \begin{frame}[fragile]
-\end{enumerate}
+  \frametitle{blast rounded e-values?}
+\begin{block}{XML output}
+[ ... ]\\
+$<$Hsp$>$\\
+  [ ... ]\\
+  $<$Hsp\_evalue$>$3.17675e-63$<$/Hsp\_evalue$>$\\
+[ ... ]\\
+     \end{block}
+     \begin{block}{Tab output}
+[ ... ]\\
+1\_0	P01031	22.60	1562	993	60	31	1457	23	1503	3e-63	225\\
+[ ... ]\\
+     \end{block}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Merging sub trees}
+ \begin{itemize}
+  \item All nodes exists only once
+  \item Subtrees by pointers
+  \item Merging by copying pointers
+  \item Advantage: Attributes are copied implicitely
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Titin - Q8WZ42}
+ Searching titin results crashes. ;( (malloc)
+\end{frame}
 
 \end{document}
