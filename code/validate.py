@@ -188,6 +188,7 @@ def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
     falsePositive = 0
     moreGeneralTruePositive = 0
     moreSpecificTruePositive = 0
+    return None
     
     
 cross_validate(reduced_sequences, 10)
