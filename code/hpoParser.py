@@ -175,6 +175,14 @@ class HpoGraph():
         result.append( key )
     # return this
     return result
+
+  def getAllChildren(self, node):
+    """ get all nodes in the subtree starting at this node """
+    for child in self.getChildrens(node):
+      for grandchild in self.getAllChildren(child):
+        yield  grandchild
+      
+      yield child
   
   def getChildrens(self, node):
     
@@ -386,5 +394,7 @@ if __name__ == "__main__":
 #  g = (sub1 - sub2)
 #  print g.getRoot()
 #  print g.hpoTermsDict
-  (sub1 + sub2).writeSvgImage(addAttrs = True)
+#for node in sub1.getAllChildren("HP:0000001"):
+#  print node
+#  (sub1 + sub2).writeSvgImage(addAttrs = True)
 #  print("HP:0000008" in sub1)
