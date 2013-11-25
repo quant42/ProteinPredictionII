@@ -96,13 +96,15 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
 
     # TODO: learn parameters
     # From here, there is work to be done
-    print trainingdata
 
     return parameters
 
 def train_result_set(hpoGraph, uni2hpoDict, dataset):
+    trainingsdata = []
     for sequence_id, sequence in dataset['test']:
-        rawHpoTerms = train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+        trainingsdata += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+
+    return trainingsdata
 
 def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     import blast, hhblits

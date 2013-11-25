@@ -56,6 +56,7 @@ class HHBLITS():
     out.writeDebug("Do a local hhblits search for {} in {}".format( seq, database ) )
     time_stamp = str(int(time.time()))
     seq_file = ''
+    seq = str(seq)
     if re.match('^[A-Z]*$',seq):
       seq_file = 'hhblits_input_'+time_stamp
       fh = open(seq_file,'w')
