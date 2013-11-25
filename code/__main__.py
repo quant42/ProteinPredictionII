@@ -62,7 +62,6 @@ try:
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
       # now get the hpo-Identifiers for each similar sequence
-      f = open( args.uni2hpo, "r" )
       for hit in blastResults.hits:
         try:
           out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
