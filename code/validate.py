@@ -6,7 +6,7 @@ from random import shuffle
 blastDbFile = '../data/genes_UniProt.fasta'
 hhblitsDbFile = '../data/PP2db.cs219'
 hpoFile = '../data/hp.obo'
-hpoMappingFile = '../data/UniProt_2_HPO'
+hpoMappingFile = '../data/UniProt_2_HPO_full'
 reducedFile = '../data/genes_UniProt_reduced_80.fasta'
 clusterFile = '../data/genes_UniProt_reduced_80.cluster'
 
@@ -40,7 +40,7 @@ for line in open(clusterFile):
         if '*' in line:
             #representative sequences have a star
             representative = sequence
-    
+sequenceCluster[representative] = sequences    
 
 
 def cross_validate(sequences, folds = 10):    
@@ -82,22 +82,107 @@ def cross_validate(sequences, folds = 10):
                 train = train + sequences[j:dataset_size:folds]
         dataset = {'train': train, 'crossTrain': crossTrain, 'test': test}
         # learn the parameters, however they will look
+        # parameters should be neural net to recognize valid annotation
         parameters = learn_parameters(hpoGraph, uni2hpoDict, dataset)
         
         # test the parameters on the independent test fold
-        errorMeasures.append((len(test), predict_set(hpoGraph, uni2hpoDict, dataset, parameters)))
+        errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, parameters))
 
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
-    minCombinedScore, minNumberOfHits, level = 0, 0, 0
+    parameters = None
     # in crosstraining, the test set is the crossTrain and the crossTrain set is the (here ignored) test set
     crossTrainSet = {'train': dataset['train'], 'crossTrain': dataset['test'], 'test': dataset['crossTrain']}
-    bestResult = 0
-    for comScore in range(11):
-        for numHits in range(10):
-            for depth in range(10):
-                error = predict_set(hpoGraph, uni2hpoDict, crossTrainSet, (comScore/float(10), numHits, depth))
+    trainingdata = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
 
-    return (minCombinedScore, minNumberOfHits)
+    # TODO: learn parameters
+    # From here, there is work to be done
+    print trainingdata
+
+    return parameters
+
+def train_result_set(hpoGraph, uni2hpoDict, dataset):
+    for sequence_id, sequence in dataset['test']:
+        rawHpoTerms = train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+
+def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
+    import blast, hhblits
+    # similar sequence
+    blastResults = blast.Blast.localBlast(seq=seq, database=blastDbFile)
+    hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=str(seq), database=hhblitsDbFile)
+    
+    # now get the hpo-Identifiers for each similar sequence
+    for hit in blastResults.hits:
+        hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
+    for hit in hhblitsResults.hits:
+        hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
+
+    # set of hits to ignore to avoid information leakage
+    reserved = set([])
+
+    # add the sequences in the associated clusters
+    for representative, sequence in dataset['crossTrain']:
+        reserved = reserved | sequenceCluster[representative]
+        
+    for representative, sequence in dataset['test']:
+        reserved = reserved | sequenceCluster[representative]   
+
+    
+    # build and merge trees
+    graph, hit_id = None, 0
+    
+    for hit in blastResults.hits:
+        #take only hits from the training set, ignore hits from test or crosstrain set
+        if hit['hit_id'] in reserved:
+            continue
+        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
+        hit_id += 1
+        if graph == None:
+            graph = subtree
+        else:
+            graph += subtree
+    for hit in hhblitsResults.hits:
+        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
+        hit_id += 1
+        if graph == None:
+            graph = subtree
+        else:
+            graph += subtree
+
+    
+    
+    # get trainings input
+    trainings_data = []
+    if graph != None:
+        for node in graph.hpoTermsDict:
+            trainingsinstance = [node]
+            minBlastEValue = 1
+            minHHblitsEvalue = 1
+            numHitsBlast = 0
+            numHitsHHblits = 0
+            for hit_number, hit_attributes in graph.hpoTermsDict[ node ].attributes.iteritems():
+                if hit_attributes['method'] == 'blast':
+                    numHitsBlast += 1
+                    if hit_attributes['hit_value'] < minBlastEValue:
+                        minBlastEValue = hit_attributes['hit_value']
+                elif hit_attributes['method'] == 'hhblits':
+                    numHitsHHblits += 1
+                    if hit_attributes['hit_value'] < minHHblitsEvalue:
+                        minHHblitsEvalue = hit_attributes['hit_value']
+                
+            
+            if node in uni2hpoDict[name]:
+                trainingsinstance.append(1)
+            else:
+                trainingsinstance.append(0)
+            trainingsinstance.append(minBlastEValue)
+            trainingsinstance.append(minHHblitsEvalue)
+            trainingsinstance.append(numHitsBlast)
+            trainingsinstance.append(numHitsHHblits)
+            trainings_data.append(trainingsinstance)
+    hpoGraph.clearAttr()
+
+    # return the set containing the most specific predictions
+    return trainings_data    
 
 def predict_set(hpoGraph, uni2hpoDict, dataset, parameters):
     errorMeasures = []
@@ -105,7 +190,6 @@ def predict_set(hpoGraph, uni2hpoDict, dataset, parameters):
     # predict test set
     for sequence_id, sequence in dataset['test']:
         predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, parameters=parameters)
-        break
         quality = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
 
     return errorMeasures
@@ -158,25 +242,10 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", par
     terms = set([])
     if graph != None:
         for node in graph.hpoTermsDict:
-            combinedValue = 1
-            for hit_number, hit_attributes in graph.hpoTermsDict[ node ].attributes.iteritems():
-                combinedValue *= hit_attributes['hit_value']
-
-            if combinedValue <= parameters[0] or len(graph.hpoTermsDict[ node ].attributes) > parameters[1]:
+            # Todo : here the neural net has to be applied
+            if False:
                 graph.hpoTermsDict[ node ].accepted = True
-                # remove parent nodes of the accepted node
-                for parentNode in graph.getParents(node):
-                    if parentNode in terms:
-                        terms.remove(parentNode)
-                # add node only, if no child nodes are in the set
-                moreSpecific = False
-                for childNode in graph.getAllChildren(node):
-                    if childNode in terms:
-                        moreSpecific = True
-                        break
-                if not moreSpecific:
-                    # TODO: add confidence score
-                    terms.add(node)
+                terms.add(node)
     hpoGraph.clearAttr()
 
     # return the set containing the most specific predictions

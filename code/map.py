@@ -12,7 +12,6 @@ def get_hpo_tree(filename):
         if line.startswith('id:'):
             node_id = line.split()[-1]
             tree[node_id] = {'childnodes': [],'parentnodes': [], 'visited': 0}
-        #TODO skip obsolete nodes
         elif line.startswith('is_obsolete:'):
             del tree[node_id]
             
@@ -32,6 +31,12 @@ def has_children(tree, node_id, set_of_children):
         elif has_children(tree, child, set_of_children):
             return True
     return False
+
+def get_parents(tree, node_id):
+    for parent in tree[node_id]['parentnodes']:
+        yield parent
+        for p in get_parents(tree, parent):
+            yield p
 
 def get_annotation_mapping(reduced = True):
     fasta_file = '../data/genes_UniProt.fasta'
@@ -66,6 +71,13 @@ def get_annotation_mapping(reduced = True):
             if eg in entrez:
                 annotations = annotations.union(entrez[eg])
         reduced_annotations = set([])
+        full_annotations = set([])
+
+        for node in annotations:
+            full_annotations.add(node)
+            for parent in get_parents(hpo_tree, node):
+                full_annotations.add(parent)
+        
         for node in annotations:
             if not has_children(hpo_tree, node, annotations):
                 reduced_annotations.add(node)
@@ -78,9 +90,11 @@ def get_annotation_mapping(reduced = True):
             else:
                 #print "%s\t%s"%(k,','.join(annotations))
                 mapping_dict[k] = annotations
+            print "%s\t%s"%(k,','.join(full_annotations))
     return mapping_dict
 
 if __name__ == "__main__":
-     if 63 == len(get_annotation_mapping(False)['O95255']) and 53 == len(get_annotation_mapping(True)['O95255']):
+    get_annotation_mapping(False)
+    if 63 == len(get_annotation_mapping(False)['O95255']) and 53 == len(get_annotation_mapping(True)['O95255']):
          print 'tests successfull'
             
