@@ -29,9 +29,9 @@ class Blast():
       self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False, 'method':'blast'})
   
   @staticmethod
-  def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta"):
+  def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta", minEVal = 1):
     out.writeDebug( "Do a local blast search for {} in {}".format( seq, database ) )
-    blastResults = commands.getstatusoutput( "echo \"{}\" | blast2 -p blastp -d {} -N -m 7".format( seq, database ) )
+    blastResults = commands.getstatusoutput( "echo \"{}\" | blast2 -p blastp -d {} -N -e {} -m 7".format( seq, database, minEVal ) )
     if blastResults[0] != 0:
       out.writeLog("Return code for blast search {} in {} returned with exit code {}!".format( seq, database, blastResults[0] ) )
     return Blast( blastResults[1] )

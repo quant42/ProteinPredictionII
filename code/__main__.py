@@ -19,6 +19,7 @@ try:
   parser.add_argument("-b", "--blastDb", dest="blastDbFile", type=str, default="../data/genes_UniProt.fasta", required=False, help="The path to the blast database to search with!")
   parser.add_argument("-l", "--hhblitsDb", dest="hhblitsDbFile", type=str, default="../data/PP2db", required=False, help="The path to the hhblits db file!")
   parser.add_argument("-c", "--uniprot2Hpo", dest="uni2hpo", type=str, default="../data/UniProt_2_HPO", required=False, help="A dictionary file for converting sequence identifiers to HPO-Terms!")
+  parser.add_argument("-e", "--blastMinEVal", dest="blastMinEVal", type=float, default=1.0, required=False, help="The minimal E-Value all hits should have (default = 1)!")
   args = parser.parse_args()
   
   # init output format
@@ -54,7 +55,7 @@ try:
       out.writeDebug( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
       
       # ok, first of all, get similar sequences!
-      blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile)
+      blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
       for hit in blastResults.hits:
         out.writeDebug( "Blast: found hit: " + str( hit ) )
       hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=args.hhblitsDbFile)
