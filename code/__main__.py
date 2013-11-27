@@ -102,7 +102,7 @@ try:
         for node in graph.hpoTermsDict:
           if len( graph.hpoTermsDict[ node ].attributes ) > 2:
             graph.hpoTermsDict[ node ].accepted = True
-      print graph.getHpoTermById(graph.getRoot()[0]).attributes
+      
       # svg image desired?
       if args.createSvgImage:
         out.writeDebug("Create a svg image showing all results!")
