@@ -375,6 +375,17 @@ class HpoTerm():
       else:
         setattr(self, attrName, attrVal)
 
+  def copy(self):
+
+    """This creates a copy of the HpoTerm and its attributes"""
+
+    copyTerm = HpoTerm('')
+    copyTerm.attributes = self.attributes.copy()
+    copyTerm.childrens = self.childrens
+    copyTerm.accepted = self.accepted
+
+    return copyTerm
+
 if __name__ == "__main__":
   graph = HpoGraph()
   print "HP:0000008" in graph.getLeaves()

@@ -2,6 +2,16 @@
 
 from Bio import SeqIO
 from random import shuffle
+import out
+
+# init output format
+out.supressMessage = True
+out.supressDebug = True
+out.supressLog = True
+out.supressWarning = True
+out.supressError = False
+out.supressOutput = False
+out.outputFormat = 'bash'
 
 blastDbFile = '../data/genes_UniProt.fasta'
 hhblitsDbFile = '../data/PP2db.cs219'
@@ -13,6 +23,7 @@ clusterFile = '../data/genes_UniProt_reduced_80.cluster'
 
 # use set of sequences with reduced sequenc redundancy as basis for validation
 # set created with CD-HIT at 80% sequence similarity
+out.writeDebug('Prepare sequence similarity reduced data set from %s'%reducedFile)
 reduced_sequences = []
 
 for record in SeqIO.parse(open(reducedFile), 'fasta'):
@@ -21,9 +32,11 @@ shuffle(reduced_sequences)
 
 # also take care to reserve sequences that are in the same cluster as the test sequences
 
+out.writeDebug('Digest sequence clusterings from %s'%clusterFile)
 sequenceCluster = {}
 representative = ''
 sequences = set([])
+
 for line in open(clusterFile):
     if not line.strip():
         continue
@@ -43,25 +56,17 @@ for line in open(clusterFile):
 sequenceCluster[representative] = sequences    
 
 
-def cross_validate(sequences, folds = 10):    
-    import out, hpoParser
+def cross_validate(sequences, folds = 10):
+    import hpoParser
 
     dataset_size = len(sequences)
     errorMeasures = []
-
-    # init output format
-    out.supressMessage = True
-    out.supressDebug = True
-    out.supressLog = True
-    out.supressWarning = True
-    out.supressError = False
-    out.supressOutput = False
-    out.outputFormat = 'bash'
 
     # init the hpoParser
     hpoGraph = hpoParser.HpoGraph(hpoFile)
 
     # init the hpo-identifier dict
+    out.writeDebug('Initialize dictionary with true annotations from %s'%hpoMappingFile)
     uni2hpoDict = {}
     f = open(hpoMappingFile)
     for line in f:
@@ -71,11 +76,13 @@ def cross_validate(sequences, folds = 10):
 
     # create folds
     for i in range(folds):
+        out.writeDebug('Start with fold %s from %s'%(i+1, folds))
         # test fold
         test = sequences[i:dataset_size:folds]
         # fold to learn parameters
         crossTrain = sequences[(i+1)%folds:dataset_size:folds]
         # fold to train on, does not include the redundant sequences here
+        # is not really necessary, since train and crosstrain are preserved
         train = []
         for j in range(folds):
             if j != i and j != (i+1)%folds:
@@ -83,30 +90,35 @@ def cross_validate(sequences, folds = 10):
         dataset = {'train': train, 'crossTrain': crossTrain, 'test': test}
         # learn the parameters, however they will look
         # parameters should be neural net to recognize valid annotation
-        parameters = learn_parameters(hpoGraph, uni2hpoDict, dataset)
+        predictor = learn_parameters(hpoGraph, uni2hpoDict, dataset)
         
         # test the parameters on the independent test fold
-        errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, parameters))
+        errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
 
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
-    parameters = None
+    out.writeDebug('Start training the predictor.')
+    from predictor import Predictor
+    net = Predictor(None)
     # in crosstraining, the test set is the crossTrain and the crossTrain set is the (here ignored) test set
     crossTrainSet = {'train': dataset['train'], 'crossTrain': dataset['test'], 'test': dataset['crossTrain']}
-    trainingdata = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
+    trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
 
     # TODO: learn parameters
     # From here, there is work to be done
-
-    return parameters
+    out.writeDebug('Collected all the nodes for training')
+    net.trainprediction(trainingNodes)
+    exit(1) 
+    return predictor
 
 def train_result_set(hpoGraph, uni2hpoDict, dataset):
-    trainingsdata = []
+    trainingNodes = []
     for sequence_id, sequence in dataset['test']:
-        trainingsdata += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
-
-    return trainingsdata
+        trainingNodes += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+    return trainingNodes
 
 def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
+    out.writeDebug('Get training data for sequence name %s with sequence: %s'%(name, seq))
+
     import blast, hhblits
     # similar sequence
     blastResults = blast.Blast.localBlast(seq=seq, database=blastDbFile)
@@ -135,6 +147,7 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     for hit in blastResults.hits:
         #take only hits from the training set, ignore hits from test or crosstrain set
         if hit['hit_id'] in reserved:
+            out.writeDebug('Skip hit %s in database that is in the test data'%(hit['hit_id']))
             continue
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
@@ -152,39 +165,21 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
 
     
     
-    # get trainings input
-    trainings_data = []
+    # get training nodes
+    trainingNodes = []
     if graph != None:
         for node in graph.hpoTermsDict:
-            trainingsinstance = [node]
-            minBlastEValue = 1
-            minHHblitsEvalue = 1
-            numHitsBlast = 0
-            numHitsHHblits = 0
-            for hit_number, hit_attributes in graph.hpoTermsDict[ node ].attributes.iteritems():
-                if hit_attributes['method'] == 'blast':
-                    numHitsBlast += 1
-                    if hit_attributes['hit_value'] < minBlastEValue:
-                        minBlastEValue = hit_attributes['hit_value']
-                elif hit_attributes['method'] == 'hhblits':
-                    numHitsHHblits += 1
-                    if hit_attributes['hit_value'] < minHHblitsEvalue:
-                        minHHblitsEvalue = hit_attributes['hit_value']
-                
             
+            ValidPrediction = False
             if node in uni2hpoDict[name]:
-                trainingsinstance.append(1)
-            else:
-                trainingsinstance.append(0)
-            trainingsinstance.append(minBlastEValue)
-            trainingsinstance.append(minHHblitsEvalue)
-            trainingsinstance.append(numHitsBlast)
-            trainingsinstance.append(numHitsHHblits)
-            trainings_data.append(trainingsinstance)
+                ValidPrediction = True
+            # copy node attributes for training
+            trainingNodes.append((graph.hpoTermsDict[node].copy(), ValidPrediction))
+            
     hpoGraph.clearAttr()
 
-    # return the set containing the most specific predictions
-    return trainings_data    
+    # return the set of trainings nodes with target variable
+    return trainingNodes    
 
 def predict_set(hpoGraph, uni2hpoDict, dataset, parameters):
     errorMeasures = []

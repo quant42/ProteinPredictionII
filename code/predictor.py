@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 
 # this is the predictor function, that runs the prediction for a graph
-
+	
 # imports
 import pickle, features, out
 from random import shuffle
 from pybrain.tools.shortcuts import buildNetwork
+from pybrain.datasets import SupervisedDataSet
 
 # some const
 ACCEPTED = 1
@@ -62,7 +63,7 @@ class Predictor():
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
-        featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
+         featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
       # ok, now run the neuronal network
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
@@ -74,8 +75,29 @@ class Predictor():
         # check parents if maybe they will be accepted
         toPredict.extend(graph.getParents(cNode))
   
-  def trainprediction(self):
-    pass
+  def trainprediction(self, data=None, biased=True):
+    if not data:
+      out.writeDebug('No training data! The net stays initialized with random weights!')
+      print 'no data'
+      return False
+
+    #create supervised data set from the training nodes
+    ds = SupervisedDataSet(len(self.features), 1)
+    for node, target in data:
+      print node, target
+      featuresValue = []
+      for feature in self.features:
+        print feature, type(feature)
+        featuresValue.append(feature(self, node, None, ''))
+      # TODO: check instances for redundancy (parent nodes look probably similar..)
+      # remove bias in the instances
+      if target:
+        ds.addSample(featuresValue, ACCEPTED)
+      else:
+        ds.addSample(featuresValue, NOTACCEPTED)
+      break
+    print ds
+      
   
   def saveNeuronalNetwork(self, fileName):
     
