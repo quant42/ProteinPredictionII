@@ -63,7 +63,7 @@ class Predictor():
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
-         featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
+        featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
       # ok, now run the neuronal network
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
@@ -95,9 +95,8 @@ class Predictor():
         ds.addSample(featuresValue, ACCEPTED)
       else:
         ds.addSample(featuresValue, NOTACCEPTED)
-      break
-    print ds
-      
+
+    return True      
   
   def saveNeuronalNetwork(self, fileName):
     
