@@ -67,12 +67,12 @@ class Predictor():
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
-        featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
+        featuresValue.append(feature(self, node, graph, querySequence))
       # ok, now run the neuronal network
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
       # check the prediction result
-      if predictionResult[0] > (ACCEPTED + NOTACCEPTED) / 2:
+      if predictionResult > (ACCEPTED + NOTACCEPTED) / 2:
         # ok, the node was accepted, by the neuronal network, so set accepted
         acceptNodeAndParentNodes(graph, node)
       else:
