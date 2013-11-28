@@ -1,0 +1,62 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+%\usepackage{default}
+
+\begin{document}
+
+\begin{frame}
+ \frametitle{ProteinPrediction II}
+ PPII Ex5 - Week 5\\
+ \hfill \\
+ Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Merging Trees}
+  
+  \begin{itemize}
+  	\item merging happens the same way as last week
+  	\item every node (hpo annotation) gets attribute
+  	\item[] e.g.: 
+  		\begin{itemize}
+  			\item blast found sequence P18465 with this annotation\\
+			\item hhblits found sequence Q24365 with this annotation
+		\end{itemize}
+  	
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{What we really did}
+	Validation 
+ 	\begin{itemize}
+ 		\item created homology reduced data set with CD-Hit
+ 		\item cross validation on this dataset
+ 	\end{itemize}
+ 	Predictor training
+ 	\begin{itemize}
+ 		\item create attributes
+ 		\item train neural network with pybrain
+ 	\end{itemize}
+{\tiny
+Schaul, Tom and Bayer, Justin and Wierstra, Daan and Sun, Yi and Felder, Martin and Sehnke, Frank and R{\"u}ckstie{\ss}, Thomas and Schmidhuber, J{\"u}rgen: PyBrain ; Journal of Machine Learning Research
+}
+ 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Validation}
+	Lots of open questions:
+	\begin{itemize}
+		\item Take annotations and all parent annotations as true positive?
+		\item Weigh level in HPO tree?
+		\item ..
+	\end{itemize}
+	
+	Is there a unified performance measure for our different methods before CAFA?
+
+\end{frame}
+
+\end{document}
