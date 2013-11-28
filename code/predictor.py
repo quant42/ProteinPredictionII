@@ -27,12 +27,17 @@ class Predictor():
         self.features.append(function)
     
     # init the network
+    init = False
     if netFile:
       # ok, load the predictor
-      f = open(netFile,'r')
-      self.net = pickle.load(f)
-      f.close()
-    else:
+      try:
+        f = open(netFile,'r')
+        self.net = pickle.load(f)
+        f.close()
+        init = True
+      except Exception:
+        out.writeError("Error reading neuronal network from file - using empty network instead!")
+    if not init:
       # create an empty predictor
       cFeatures = len(self.features)
       self.net = buildNetwork( cFeatures, cFeatures + 1, 3, 1)
