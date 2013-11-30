@@ -99,7 +99,7 @@ def cross_validate(sequences, folds = 10):
             recall = f[0]/float(f[0]+f[2])
             print 'fold %s:\nprecision: %s\nrecall: %s'%(fold, precision, recall)
         except ZeroDivisionError, e:
-            out.writeDebug('Division by Zero.\nTP, FP, FN are: &s, &s, &s'%(f[0], f[1], f[2])
+            out.writeDebug('Division by Zero.\nTP, FP, FN are: &s, &s, &s'%(f[0], f[1], f[2]))
             
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
