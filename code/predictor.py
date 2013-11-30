@@ -7,6 +7,8 @@ import pickle, features, out
 from random import shuffle
 from pybrain.tools.shortcuts import buildNetwork
 from pybrain.datasets import SupervisedDataSet
+from pybrain.supervised.trainers import BackpropTrainer
+
 
 # some const
 ACCEPTED = 1
@@ -97,7 +99,10 @@ class Predictor():
 
     for instance in reduced_dataset:
       ds.addSample(instance[:-1],instance[-1])
-
+      
+    trainer = BackpropTrainer(self.net, ds)
+    trainer.trainUntilConvergence()
+    
     return True      
   
   def saveNeuronalNetwork(self, fileName):

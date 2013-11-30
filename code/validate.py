@@ -91,12 +91,16 @@ def cross_validate(sequences, folds = 10):
         # learn the parameters, however they will look
         # parameters should be neural net to recognize valid annotation
         predictor = learn_parameters(hpoGraph, uni2hpoDict, dataset)
-        
         # test the parameters on the independent test fold
         errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
     for fold, f in enumerate(errorMeasures):
-        print 'fold &s:\nprecision: %s\nrecall: %s'%(fold, f[0]/float(f[0]+f[1]), f[0]/float(f[0]+f[2]))
-    
+        try:
+            precision = f[0]/float(f[0]+f[1])
+            recall = f[0]/float(f[0]+f[2])
+            print 'fold %s:\nprecision: %s\nrecall: %s'%(fold, precision, recall)
+        except ZeroDivisionError, e:
+            out.writeDebug('Division by Zero.\nTP, FP, FN are: &s, &s, &s'%(f[0], f[1], f[2])
+            
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
     from predictor import Predictor
@@ -105,8 +109,6 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     crossTrainSet = {'train': dataset['train'], 'crossTrain': dataset['test'], 'test': dataset['crossTrain']}
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
 
-    # TODO: learn parameters
-    # From here, there is work to be done
     out.writeDebug('Collected all the nodes for training')
     neuralNet.trainprediction(trainingNodes)
 
@@ -253,12 +255,11 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
     return terms
 
 def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
-    # TODO: evaluation conditions? What is a correct prediction?
     TP = 0
     FP = 0
     FN = 0
     for term in predictedHpoTerms:
-        if term in uni2hpoDict[sequence_id]:
+        if term.id in uni2hpoDict[sequence_id]:
             TP += 1
         else:
             FP += 1
