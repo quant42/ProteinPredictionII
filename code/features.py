@@ -5,7 +5,7 @@
 
 def featMaxEValue(predictor, node, graph, querySequence):
   maxEVal = None
-  for attr in node.attributes:
+  for hit, attr in node.attributes.iteritems():
     attrEVal = attr[ "hit_value" ]
     if maxEVal == None:
       maxEVal = attrEVal
@@ -20,14 +20,14 @@ def featCHits(predictor, node, graph, querySequence):
 # Feature: the average E-Value
 def featAvgEValue(predictor, node, graph, querySequence):
   cAttrs, sumAttrEVal = len(node.attributes), 0.0
-  for attr in node.attributes:
+  for hit, attr in node.attributes.iteritems():
     sumAttrEVal += attr[ "hit_value" ]
   return sumAttrEVal / cAttrs
 
 # Feature: The best hit value
 def featMaxEValueHitLength(predictor, node, graph, querySequence):
   maxEVal, maxHitLength = None, 0
-  for attr in node.attributes:
+  for hit, attr in node.attributes.iteritems():
     attrEVal = attr[ "hit_value" ]
     attrHitLength = attr[ "hit_to" ] + 1 - attr[ "hit_from" ]
     if maxEVal == None:

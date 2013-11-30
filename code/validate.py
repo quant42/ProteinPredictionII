@@ -6,7 +6,7 @@ import out
 
 # init output format
 out.supressMessage = True
-out.supressDebug = True
+out.supressDebug = False
 out.supressLog = True
 out.supressWarning = True
 out.supressError = False
@@ -94,11 +94,13 @@ def cross_validate(sequences, folds = 10):
         
         # test the parameters on the independent test fold
         errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
-
+    for fold, f in enumerate(errorMeasures):
+        print 'fold &s:\nprecision: %s\nrecall: %s'%(fold, f[0]/float(f[0]+f[1]), f[0]/float(f[0]+f[2]))
+    
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
     from predictor import Predictor
-    net = Predictor(None)
+    neuralNet = Predictor(None)
     # in crosstraining, the test set is the crossTrain and the crossTrain set is the (here ignored) test set
     crossTrainSet = {'train': dataset['train'], 'crossTrain': dataset['test'], 'test': dataset['crossTrain']}
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
@@ -106,9 +108,9 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     # TODO: learn parameters
     # From here, there is work to be done
     out.writeDebug('Collected all the nodes for training')
-    net.trainprediction(trainingNodes)
-    exit(1) 
-    return predictor
+    neuralNet.trainprediction(trainingNodes)
+
+    return neuralNet
 
 def train_result_set(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = []
@@ -181,27 +183,29 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     # return the set of trainings nodes with target variable
     return trainingNodes    
 
-def predict_set(hpoGraph, uni2hpoDict, dataset, parameters):
-    errorMeasures = []
+def predict_set(hpoGraph, uni2hpoDict, dataset, predictor):
+    TP, FP, FN = 0, 0, 0
     
     # predict test set
     for sequence_id, sequence in dataset['test']:
-        predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, parameters=parameters)
-        quality = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
-
-    return errorMeasures
+        predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, predictor=predictor)
+        (thisTP, thisFP, thisFN) = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
+        TP += thisTP
+        FP += thisFP
+        FN += thisFN
+    return (TP, FP, FN)
                               
-def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", parameters = (0.5,3, 20)):
+def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", predictor = ''):
     import blast, hhblits
     # similar sequence
     blastResults = blast.Blast.localBlast(seq=seq, database=blastDbFile)
-    #hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=hhblitsDbFile)
+    hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=hhblitsDbFile)
     
     # now get the hpo-Identifiers for each similar sequence
     for hit in blastResults.hits:
         hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
-    #for hit in hhblitsResults.hits:
-    #    hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
+    for hit in hhblitsResults.hits:
+        hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
 
     # set of hits to ignore to avoid information leakage
     reserved = set([])
@@ -227,21 +231,21 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", par
             graph = subtree
         else:
             graph += subtree
-    #for hit in hhblitsResults.hits:
-    #    subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
-    #    hit_id += 1
-    #    if graph == None:
-    #        graph = subtree
-    #    else:
-    #        graph += subtree
+    for hit in hhblitsResults.hits:
+        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
+        hit_id += 1
+        if graph == None:
+            graph = subtree
+        else:
+            graph += subtree
   
     # do the prediction
     terms = set([])
     if graph != None:
-        for node in graph.hpoTermsDict:
-            # Todo : here the neural net has to be applied
-            if False:
-                graph.hpoTermsDict[ node ].accepted = True
+        predictor.runprediction(seq, graph)
+        for nodeID, node in graph.hpoTermsDict.iteritems():
+            # get the accepted nodes
+            if node.accepted:
                 terms.add(node)
     hpoGraph.clearAttr()
 
@@ -249,12 +253,18 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", par
     return terms
 
 def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
-    # TODO: evaluation conditions? What is a correct prediction? Does every node in the correct subtree contribute equally?
-    truePositive = 0
-    falsePositive = 0
-    moreGeneralTruePositive = 0
-    moreSpecificTruePositive = 0
-    return None
+    # TODO: evaluation conditions? What is a correct prediction?
+    TP = 0
+    FP = 0
+    FN = 0
+    for term in predictedHpoTerms:
+        if term in uni2hpoDict[sequence_id]:
+            TP += 1
+        else:
+            FP += 1
+    FN = len(uni2hpoDict[sequence_id]) - TP     
+    
+    return (TP, FP, FN)
     
     
 cross_validate(reduced_sequences, 10)

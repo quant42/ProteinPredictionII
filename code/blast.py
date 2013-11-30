@@ -9,7 +9,7 @@ class Blast():
   """ A basic blasting class """
   
   # construct this class by the xml blast output
-  def __init__(self, blastResults):
+  def __init__(self, blastResults, k = 10):
     out.writeDebug("Initalize Blast Alignment by blasting results ...")
     # self stuff
     self.hits = []
@@ -20,14 +20,18 @@ class Blast():
     hitFromPattern = re.compile("<Hsp_hit-from>(.*?)</Hsp_hit-from>")
     hitToPattern = re.compile("<Hsp_hit-to>(.*?)</Hsp_hit-to>")
     # for each hit in the xml
+    i = 0
     for hit in hitPattern.finditer( blastResults ):
+      i += 1
+      if i > k:
+        break
       text = hit.group(0)
       hit_id = hitIdPattern.search( text ).group( 1 )
       hit_e_value = hitEValPattern.search( text ).group( 1 )
       hit_from = hitFromPattern.search( text ).group( 1 )
       hit_to = hitToPattern.search( text ).group( 1 )
       self.hits.append({'hit_id':hit_id, 'hit_value': float(hit_e_value), 'hit_from':int(hit_from), 'hit_to': int(hit_to), 'hit_order': False, 'method':'blast'})
-  
+      
   @staticmethod
   def localBlast(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/genes_UniProt.fasta", minEVal = 1):
     out.writeDebug( "Do a local blast search for {} in {}".format( seq, database ) )

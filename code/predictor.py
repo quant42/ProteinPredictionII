@@ -25,7 +25,7 @@ class Predictor():
     functions = dir(features)
     for function in functions:
       if function.startswith('feat'):
-        self.features.append(function)
+        self.features.append(getattr(features,function))
     
     # init the network
     if netFile:
@@ -47,7 +47,7 @@ class Predictor():
       node.accepted = True
       stack = graph.getParents(node)
       while len(stack) != 0:
-        cNode = stack.pop()
+        cNode = graph.getHpoTermById(stack.pop())
         cNode.accepted = True
         stack.extend(graph.getParents(cNode))
     
@@ -55,7 +55,7 @@ class Predictor():
     
     while len(toPredict) != 0:
       # ok, get the node to predict
-      cNode = toPredict[0]
+      cNode = graph.getHpoTermById(toPredict[0])
       toPredict = toPredict[1:]
       # do next, if node was already accepted (by a child node)
       if cNode.accepted:
@@ -63,14 +63,14 @@ class Predictor():
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
-        featuresValue.append(getattr(features, feature)(self, node, graph, querySequence))
+        featuresValue.append(feature(self, cNode, graph, querySequence))
       # ok, now run the neuronal network
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
       # check the prediction result
       if predictionResult[0] > (ACCEPTED + NOTACCEPTED) / 2:
         # ok, the node was accepted, by the neuronal network, so set accepted
-        acceptNodeAndParentNodes(graph, node)
+        acceptNodeAndParentNodes(graph, cNode)
       else:
         # check parents if maybe they will be accepted
         toPredict.extend(graph.getParents(cNode))
@@ -83,18 +83,20 @@ class Predictor():
 
     #create supervised data set from the training nodes
     ds = SupervisedDataSet(len(self.features), 1)
+    reduced_dataset = set([])
     for node, target in data:
-      print node, target
       featuresValue = []
       for feature in self.features:
-        print feature, type(feature)
         featuresValue.append(feature(self, node, None, ''))
       # TODO: check instances for redundancy (parent nodes look probably similar..)
       # remove bias in the instances
       if target:
-        ds.addSample(featuresValue, ACCEPTED)
+        reduced_dataset.add(tuple(featuresValue+[ACCEPTED]))        
       else:
-        ds.addSample(featuresValue, NOTACCEPTED)
+        reduced_dataset.add(tuple(featuresValue+[NOTACCEPTED]))
+
+    for instance in reduced_dataset:
+      ds.addSample(instance[:-1],instance[-1])
 
     return True      
   

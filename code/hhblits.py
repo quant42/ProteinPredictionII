@@ -10,14 +10,13 @@
 # ===================================================================
 
 import out, subprocess, re, os, math
-minEValue = 0.1
 class HHBLITS():
   
   """ A basic hmmblits class """
   
   # constructor for building this class, if the header of the sequences, the sequences them self and the
   # corresponding hhblitsResults are already known
-  def __init__(self, hhblitsResults):
+  def __init__(self, hhblitsResults, k = 10):
     out.writeDebug("Initalize hhblits alignment ...")      
     # self stuff
     self.hits = []
@@ -27,6 +26,7 @@ class HHBLITS():
     beginOfResults = False
     lines = hhblitsResults.split('\n')
     tmp = []
+    i = 0
     for line in lines:
       # skip empty lines
       if not line.strip():
@@ -36,7 +36,8 @@ class HHBLITS():
         break
       # skip all lines before the actual searching results begin
       if beginOfResults:
-        if line.startswith('No 1'):
+        i += 1
+        if line.startswith('No 1') or i > k:
           #end of results
           break
         items = line.split()
@@ -51,7 +52,7 @@ class HHBLITS():
     
   
   @staticmethod
-  def localHHBLITS(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/PP2db"):
+  def localHHBLITS(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/PP2db", minEVal = 1):
     import time
     out.writeDebug("Do a local hhblits search for {} in {}".format( seq, database ) )
     time_stamp = str(int(time.time()))
@@ -65,7 +66,7 @@ class HHBLITS():
     else:
       seq_file = seq
     outfile = 'hhblits_'+time_stamp+'.out'
-    command = "hhblits -i {} -o {} -d {} -e {} -n 1".format(seq_file, outfile, database, minEValue)
+    command = "hhblits -i {} -o {} -d {} -e {} -n 1".format(seq_file, outfile, database, minEVal)
     try:
       hhblitsResults = subprocess.check_output(command, stderr=subprocess.STDOUT, shell = True)
       hhblitsResults = open(outfile).read()
