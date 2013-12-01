@@ -77,7 +77,7 @@ class Predictor():
         # check parents if maybe they will be accepted
         toPredict.extend(graph.getParents(cNode))
   
-  def trainprediction(self, data=None, biased=True):
+  def trainprediction(self, data=None, biased=False):
     if not data:
       out.writeDebug('No training data! The net stays initialized with random weights!')
       print 'no data'
@@ -85,23 +85,30 @@ class Predictor():
 
     #create supervised data set from the training nodes
     ds = SupervisedDataSet(len(self.features), 1)
-    reduced_dataset = set([])
+    reduced_dataset = [set([]),set([])]
     for node, target in data:
       featuresValue = []
       for feature in self.features:
         featuresValue.append(feature(self, node, None, ''))
-      # TODO: check instances for redundancy (parent nodes look probably similar..)
-      # remove bias in the instances
+        
       if target:
-        reduced_dataset.add(tuple(featuresValue+[ACCEPTED]))        
+        reduced_dataset[0].add(tuple(featuresValue+[ACCEPTED]))        
       else:
-        reduced_dataset.add(tuple(featuresValue+[NOTACCEPTED]))
+        reduced_dataset[1].add(tuple(featuresValue+[NOTACCEPTED]))
 
-    for instance in reduced_dataset:
-      ds.addSample(instance[:-1],instance[-1])
-      
+    for posInstance, negInstance in zip(reduced_dataset[0],reduced_dataset[1]):
+      ds.addSample(posInstance[:-1],posInstance[-1])
+      ds.addSample(negInstance[:-1],negInstance[-1])
+
+    if biased:
+      ds = SupervisedDataSet(len(self.features), 1)
+      for instance in reduced_dataset[0]:
+        ds.addSample(instance[:-1],instance[-1])      
+      for instance in reduced_dataset[1]:
+        ds.addSample(instance[:-1],instance[-1])
+    out.writeDebug('Start training neural net with %s training examples.\ndataset bias is set to %s'%(len(ds), biased ))
     trainer = BackpropTrainer(self.net, ds)
-    trainer.trainUntilConvergence()
+    trainer.trainUntilConvergence(maxEpochs = 1000)
     
     return True      
   
@@ -110,7 +117,7 @@ class Predictor():
     """ save the neuronal network to a file """
     
     fileObj = open(fileName, "w+")
-    pickle.dump(net, fileObj)
+    pickle.dump(self.net, fileObj)
     fileObj.close()
 
 if __name__ == "__main__":

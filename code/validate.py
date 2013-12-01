@@ -20,40 +20,42 @@ hpoMappingFile = '../data/UniProt_2_HPO_full'
 reducedFile = '../data/genes_UniProt_reduced_80.fasta'
 clusterFile = '../data/genes_UniProt_reduced_80.cluster'
 
+def reduce_sequences():
+    # use set of sequences with reduced sequenc redundancy as basis for validation
+    # set created with CD-HIT at 80% sequence similarity
+    out.writeDebug('Prepare sequence similarity reduced data set from %s'%reducedFile)
+    reduced_sequences = []
 
-# use set of sequences with reduced sequenc redundancy as basis for validation
-# set created with CD-HIT at 80% sequence similarity
-out.writeDebug('Prepare sequence similarity reduced data set from %s'%reducedFile)
-reduced_sequences = []
+    for record in SeqIO.parse(open(reducedFile), 'fasta'):
+        reduced_sequences.append((record.id, record.seq))
+    shuffle(reduced_sequences)
 
-for record in SeqIO.parse(open(reducedFile), 'fasta'):
-    reduced_sequences.append((record.id, record.seq))
-shuffle(reduced_sequences)
+    # also take care to reserve sequences that are in the same cluster as the test sequences
 
-# also take care to reserve sequences that are in the same cluster as the test sequences
+    out.writeDebug('Digest sequence clusterings from %s'%clusterFile)
+    sequenceCluster = {}
+    representative = ''
+    sequences = set([])
 
-out.writeDebug('Digest sequence clusterings from %s'%clusterFile)
-sequenceCluster = {}
-representative = ''
-sequences = set([])
+    for line in open(clusterFile):
+        if not line.strip():
+            continue
+        if  line.startswith('>'):
+            #new cluster:
+            if representative:
+                sequenceCluster[representative] = sequences
 
-for line in open(clusterFile):
-    if not line.strip():
-        continue
-    if  line.startswith('>'):
-        #new cluster:
-        if representative:
-            sequenceCluster[representative] = sequences
+            representative = ''
+            sequences = set([])
+        else:
+            sequence = line.split('>')[1].split('.')[0]
+            sequences.add(sequence)
+            if '*' in line:
+                #representative sequences have a star
+                representative = sequence
+    sequenceCluster[representative] = sequences
 
-        representative = ''
-        sequences = set([])
-    else:
-        sequence = line.split('>')[1].split('.')[0]
-        sequences.add(sequence)
-        if '*' in line:
-            #representative sequences have a star
-            representative = sequence
-sequenceCluster[representative] = sequences    
+    return (reduced_sequences,sequenceCluster)
 
 
 def cross_validate(sequences, folds = 10):
@@ -91,16 +93,20 @@ def cross_validate(sequences, folds = 10):
         # learn the parameters, however they will look
         # parameters should be neural net to recognize valid annotation
         predictor = learn_parameters(hpoGraph, uni2hpoDict, dataset)
+        predictor.saveNeuronalNetwork('neuronalNetwork_Fold%s'%i)
         # test the parameters on the independent test fold
         errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
     for fold, f in enumerate(errorMeasures):
         try:
             precision = f[0]/float(f[0]+f[1])
             recall = f[0]/float(f[0]+f[2])
-            print 'fold %s:\nprecision: %s\nrecall: %s'%(fold, precision, recall)
+            print 'fold %s:\nprecision: %0.2f\nrecall: %0.2f'%(fold, precision*100, recall*100)
         except ZeroDivisionError, e:
-            out.writeDebug('Division by Zero.\nTP, FP, FN are: &s, &s, &s'%(f[0], f[1], f[2]))
-            
+            out.writeDebug('Division by Zero. TP, FP, FN are: %s, %s, %s'%(f[0], f[1], f[2]))
+        except Exception, e:
+            out.writeDebug(e)
+            out.writeDebug('Unforeseen error. TP, FP, FN at this point are: %s, %s, %s'%(f[0], f[1], f[2]))
+
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
     from predictor import Predictor
@@ -267,5 +273,5 @@ def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
     
     return (TP, FP, FN)
     
-    
-cross_validate(reduced_sequences, 10)
+reducedSequences, sequenceCluster = reduce_sequences()
+cross_validate(reducedSequences, 10)
