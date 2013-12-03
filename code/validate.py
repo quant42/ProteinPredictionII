@@ -12,6 +12,9 @@ out.supressWarning = True
 out.supressError = False
 out.supressOutput = False
 out.outputFormat = 'bash'
+# to speed up the process for testing purposes, set shortcut to True
+# then, only 
+shortcut = 0
 
 blastDbFile = '../data/genes_UniProt.fasta'
 hhblitsDbFile = '../data/PP2db.cs219'
@@ -51,7 +54,7 @@ def reduce_sequences():
             sequence = line.split('>')[1].split('.')[0]
             sequences.add(sequence)
             if '*' in line:
-                #representative sequences have a star
+                # representative sequences have a star
                 representative = sequence
     sequenceCluster[representative] = sequences
 
@@ -100,11 +103,13 @@ def cross_validate(sequences, folds = 10):
         predictor.saveNeuronalNetwork('neuronalNetwork_Fold%s'%i)
         # test the parameters on the independent test fold
         allPredictions.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
+        if shortcut:
+            break
         
     for fold, predictions in enumerate(allPredictions):
-        print '***fold %s:***'%fold
-        for predictedTerm, predictedNode in predictions:
-            print predictedTerm, predictedNode.accepted, predictedNode.TruePrediction
+        print '***fold %s (FN = %s):***'%((fold+1), predictions[1])
+        for predictedNode in predictions[0]:
+            print predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
     
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
@@ -112,10 +117,13 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     neuralNet = Predictor(None)
     # in crosstraining, the test set is the crossTrain and the crossTrain set is the (here ignored) test set
     crossTrainSet = {'train': dataset['train'], 'crossTrain': dataset['test'], 'test': dataset['crossTrain']}
+    
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
-
     out.writeDebug('Collected all the nodes for training')
-    neuralNet.trainprediction(trainingNodes)
+    
+    if not shortcut:
+        neuralNet.trainprediction(trainingNodes)
+        pass
 
     return neuralNet
 
@@ -123,6 +131,8 @@ def train_result_set(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = []
     for sequence_id, sequence in dataset['test']:
         trainingNodes += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+        if shortcut:
+            break
     return trainingNodes
 
 def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
@@ -192,12 +202,17 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     return trainingNodes    
 
 def predict_set(hpoGraph, uni2hpoDict, dataset, predictor):
-    
+    allFN = 0
+    allValidatedPredictions = []
     # predict test set
     for sequence_id, sequence in dataset['test']:
         predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, predictor=predictor)
-        validatedTerms = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
-    return validatedTerms
+        validatedTerms, numberOfTrueTermsNeverConsidered = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
+        allFN += numberOfTrueTermsNeverConsidered
+        allValidatedPredictions.extend(validatedTerms)
+        if shortcut:
+            break
+    return (allValidatedPredictions, allFN)
                               
 def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", predictor = ''):
     import blast, hhblits
@@ -258,11 +273,16 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
     return terms
 
 def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
+    consideredPositives = 0
     for HPOnode in predictedHpoTerms:
         HPOterm = HPOnode.id
         if HPOterm in uni2hpoDict[sequence_id]:
             HPOnode.TruePrediction = True
-    return predictedHpoTerms
+            consideredPositives += 1
+    # add number of false negatives to graph
+    # we never consider them here since there is no hit with the terms
+    FN = len(uni2hpoDict[sequence_id]) - consideredPositives
+    return (predictedHpoTerms, FN)
     
 reducedSequences, sequenceCluster = reduce_sequences()
 cross_validate(reducedSequences, 10)

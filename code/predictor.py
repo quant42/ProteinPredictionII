@@ -44,7 +44,6 @@ class Predictor():
     
     """ this function marks all nodes in the graph as accepted, if the prediction they are predicted to be positive, Note, that node.accpeted should be false for all nodes.
     This function set the node.accpeted = True, for all nodes that are accepted by the predictor. """
-    
     def acceptNodeAndParentNodes(graph, node):
       node.accepted = True
       stack = graph.getParents(node)
@@ -53,15 +52,9 @@ class Predictor():
         cNode.accepted = True
         stack.extend(graph.getParents(cNode))
     
-    toPredict = graph.getLeaves()
-    
-    while len(toPredict) != 0:
+    for cNodeID, cNode in graph.hpoTermsDict.iteritems():
       # ok, get the node to predict
-      cNode = graph.getHpoTermById(toPredict[0])
-      toPredict = toPredict[1:]
-      # do next, if node was already accepted (by a child node)
-      if cNode.accepted:
-        continue
+      
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
@@ -70,14 +63,16 @@ class Predictor():
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
       # check the prediction result
+      # difference should be between -2 (lowest confidence) and 2 (highest confidence)
+      # ideally, the predictionResult is (1,-1) for accepted, (-1,1) for not accepted
       confidence =  predictionResult[0] - predictionResult[1]
-      # ok, the node was accepted, by the neuronal network, so set accepted
+      # ok, set accepted attribute to confidence
       cNode.accepted = confidence
       
   def trainprediction(self, data=None, biased=False):
+    """Trains the neural network with the provided trainings data and returns true, if the training was successful"""
     if not data:
       out.writeDebug('No training data! The net stays initialized with random weights!')
-      print 'no data'
       return False
 
     #create supervised data set from the training nodes
@@ -94,18 +89,18 @@ class Predictor():
         reduced_dataset[1].add(tuple(featuresValue+[NOTACCEPTED, ACCEPTED]))
 
     for posInstance, negInstance in zip(reduced_dataset[0],reduced_dataset[1]):
-      ds.addSample(posInstance[:-1],posInstance[-2:])
-      ds.addSample(negInstance[:-1],negInstance[-2:])
+      ds.addSample(posInstance[:-2],posInstance[-2:])
+      ds.addSample(negInstance[:-2],negInstance[-2:])
 
     if biased:
-      ds = SupervisedDataSet(len(self.features), 1)
+      ds = SupervisedDataSet(len(self.features), 2)
       for instance in reduced_dataset[0]:
         ds.addSample(instance[:-2],instance[-2:])      
       for instance in reduced_dataset[1]:
         ds.addSample(instance[:-2],instance[-2:])
     out.writeDebug('Start training neural net with %s training examples. Dataset bias is set to %s'%(len(ds), biased ))
     trainer = BackpropTrainer(self.net, ds)
-    trainer.trainUntilConvergence(maxEpochs = 1000)
+    trainer.trainUntilConvergence(maxEpochs = 10)
     
     return True      
   
