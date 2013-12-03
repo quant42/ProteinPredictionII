@@ -115,7 +115,7 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
 
     out.writeDebug('Collected all the nodes for training')
-    #neuralNet.trainprediction(trainingNodes)
+    neuralNet.trainprediction(trainingNodes)
 
     return neuralNet
 
@@ -123,7 +123,6 @@ def train_result_set(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = []
     for sequence_id, sequence in dataset['test']:
         trainingNodes += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
-        break
     return trainingNodes
 
 def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
