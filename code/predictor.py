@@ -100,7 +100,7 @@ class Predictor():
         ds.addSample(instance[:-2],instance[-2:])
     out.writeDebug('Start training neural net with %s training examples. Dataset bias is set to %s'%(len(ds), biased ))
     trainer = BackpropTrainer(self.net, ds)
-    trainer.trainUntilConvergence(maxEpochs = 10)
+    trainer.trainUntilConvergence(maxEpochs = 10000)
     
     return True      
   
