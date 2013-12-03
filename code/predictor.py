@@ -38,7 +38,7 @@ class Predictor():
     else:
       # create an empty predictor
       cFeatures = len(self.features)
-      self.net = buildNetwork( cFeatures, cFeatures + 1, 3, 1)
+      self.net = buildNetwork( cFeatures, cFeatures + 1, 3, 2)
   
   def runprediction(self, querySequence, graph):
     
@@ -70,13 +70,10 @@ class Predictor():
       predictionResult = self.net.activate(featuresValue)
       out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
       # check the prediction result
-      if predictionResult[0] > (ACCEPTED + NOTACCEPTED) / 2:
-        # ok, the node was accepted, by the neuronal network, so set accepted
-        acceptNodeAndParentNodes(graph, cNode)
-      else:
-        # check parents if maybe they will be accepted
-        toPredict.extend(graph.getParents(cNode))
-  
+      confidence =  predictionResult[0] - predictionResult[1]
+      # ok, the node was accepted, by the neuronal network, so set accepted
+      cNode.accepted = confidence
+      
   def trainprediction(self, data=None, biased=False):
     if not data:
       out.writeDebug('No training data! The net stays initialized with random weights!')
@@ -84,7 +81,7 @@ class Predictor():
       return False
 
     #create supervised data set from the training nodes
-    ds = SupervisedDataSet(len(self.features), 1)
+    ds = SupervisedDataSet(len(self.features), 2)
     reduced_dataset = [set([]),set([])]
     for node, target in data:
       featuresValue = []
@@ -92,21 +89,21 @@ class Predictor():
         featuresValue.append(feature(self, node, None, ''))
         
       if target:
-        reduced_dataset[0].add(tuple(featuresValue+[ACCEPTED]))        
+        reduced_dataset[0].add(tuple(featuresValue+[ACCEPTED, NOTACCEPTED]))        
       else:
-        reduced_dataset[1].add(tuple(featuresValue+[NOTACCEPTED]))
+        reduced_dataset[1].add(tuple(featuresValue+[NOTACCEPTED, ACCEPTED]))
 
     for posInstance, negInstance in zip(reduced_dataset[0],reduced_dataset[1]):
-      ds.addSample(posInstance[:-1],posInstance[-1])
-      ds.addSample(negInstance[:-1],negInstance[-1])
+      ds.addSample(posInstance[:-1],posInstance[-2:])
+      ds.addSample(negInstance[:-1],negInstance[-2:])
 
     if biased:
       ds = SupervisedDataSet(len(self.features), 1)
       for instance in reduced_dataset[0]:
-        ds.addSample(instance[:-1],instance[-1])      
+        ds.addSample(instance[:-2],instance[-2:])      
       for instance in reduced_dataset[1]:
-        ds.addSample(instance[:-1],instance[-1])
-    out.writeDebug('Start training neural net with %s training examples.\ndataset bias is set to %s'%(len(ds), biased ))
+        ds.addSample(instance[:-2],instance[-2:])
+    out.writeDebug('Start training neural net with %s training examples. Dataset bias is set to %s'%(len(ds), biased ))
     trainer = BackpropTrainer(self.net, ds)
     trainer.trainUntilConvergence(maxEpochs = 1000)
     

@@ -329,7 +329,8 @@ class HpoGraph():
     
     for key in self.hpoTermsDict:
       self.hpoTermsDict[key].attributes = {}
-      self.hpoTermsDict[key].accepted = False
+      self.hpoTermsDict[key].accepted =  -9999
+      self.hpoTermsDict[key].TruePrediction = False
   
   def addAttr( self, dict ):
     
@@ -359,7 +360,8 @@ class HpoTerm():
     # add an array for the childrens
     self.childrens = []
     self.attributes = {}
-    self.accepted = False
+    self.accepted = -9999
+    self.TruePrediction = False
     # ok, parse the rest of the lines
     for line in hpoTermLines:
       # ok, thats a good line with a good description
@@ -383,6 +385,8 @@ class HpoTerm():
     copyTerm.attributes = self.attributes.copy()
     copyTerm.childrens = self.childrens
     copyTerm.accepted = self.accepted
+    copyTerm.TruePrediction = self.TruePrediction
+    copyTerm.id = self.id
 
     return copyTerm
 

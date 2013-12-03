@@ -6,7 +6,7 @@ import out
 
 # init output format
 out.supressMessage = True
-out.supressDebug = False
+out.supressDebug = True
 out.supressLog = True
 out.supressWarning = True
 out.supressError = False
@@ -59,10 +59,10 @@ def reduce_sequences():
 
 
 def cross_validate(sequences, folds = 10):
-    import hpoParser
-
+    import hpoParser, time
+    starttime = time.time()
     dataset_size = len(sequences)
-    errorMeasures = []
+    allPredictions = []
 
     # init the hpoParser
     hpoGraph = hpoParser.HpoGraph(hpoFile)
@@ -78,7 +78,11 @@ def cross_validate(sequences, folds = 10):
 
     # create folds
     for i in range(folds):
+        now = (time.time() - starttime)/60
+        minutes = int(now%60)
+        hours = int(now/60)
         out.writeDebug('Start with fold %s from %s'%(i+1, folds))
+        out.writeDebug('Time elapsed: %s:%s'%(hours, minutes))
         # test fold
         test = sequences[i:dataset_size:folds]
         # fold to learn parameters
@@ -95,18 +99,13 @@ def cross_validate(sequences, folds = 10):
         predictor = learn_parameters(hpoGraph, uni2hpoDict, dataset)
         predictor.saveNeuronalNetwork('neuronalNetwork_Fold%s'%i)
         # test the parameters on the independent test fold
-        errorMeasures.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
-    for fold, f in enumerate(errorMeasures):
-        try:
-            precision = f[0]/float(f[0]+f[1])
-            recall = f[0]/float(f[0]+f[2])
-            print 'fold %s:\nprecision: %0.2f\nrecall: %0.2f'%(fold, precision*100, recall*100)
-        except ZeroDivisionError, e:
-            out.writeDebug('Division by Zero. TP, FP, FN are: %s, %s, %s'%(f[0], f[1], f[2]))
-        except Exception, e:
-            out.writeDebug(e)
-            out.writeDebug('Unforeseen error. TP, FP, FN at this point are: %s, %s, %s'%(f[0], f[1], f[2]))
-
+        allPredictions.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
+        
+    for fold, predictions in enumerate(allPredictions):
+        print '***fold %s:***'%fold
+        for predictedTerm, predictedNode in predictions:
+            print predictedTerm, predictedNode.accepted, predictedNode.TruePrediction
+    
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
     from predictor import Predictor
@@ -116,7 +115,7 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
 
     out.writeDebug('Collected all the nodes for training')
-    neuralNet.trainprediction(trainingNodes)
+    #neuralNet.trainprediction(trainingNodes)
 
     return neuralNet
 
@@ -124,6 +123,7 @@ def train_result_set(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = []
     for sequence_id, sequence in dataset['test']:
         trainingNodes += train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence)
+        break
     return trainingNodes
 
 def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
@@ -179,7 +179,8 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     trainingNodes = []
     if graph != None:
         for node in graph.hpoTermsDict:
-            
+            if node == 'HP:0000001':
+                continue
             ValidPrediction = False
             if node in uni2hpoDict[name]:
                 ValidPrediction = True
@@ -192,16 +193,12 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
     return trainingNodes    
 
 def predict_set(hpoGraph, uni2hpoDict, dataset, predictor):
-    TP, FP, FN = 0, 0, 0
     
     # predict test set
     for sequence_id, sequence in dataset['test']:
         predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, predictor=predictor)
-        (thisTP, thisFP, thisFN) = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
-        TP += thisTP
-        FP += thisFP
-        FN += thisFN
-    return (TP, FP, FN)
+        validatedTerms = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
+    return validatedTerms
                               
 def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", predictor = ''):
     import blast, hhblits
@@ -252,26 +249,21 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
     if graph != None:
         predictor.runprediction(seq, graph)
         for nodeID, node in graph.hpoTermsDict.iteritems():
-            # get the accepted nodes
-            if node.accepted:
-                terms.add(node)
+            if nodeID == 'HP:0000001':
+                continue
+            # get the nodes
+            terms.add(node.copy())
     hpoGraph.clearAttr()
 
     # return the set containing the most specific predictions
     return terms
 
 def validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict):
-    TP = 0
-    FP = 0
-    FN = 0
-    for term in predictedHpoTerms:
-        if term.id in uni2hpoDict[sequence_id]:
-            TP += 1
-        else:
-            FP += 1
-    FN = len(uni2hpoDict[sequence_id]) - TP     
-    
-    return (TP, FP, FN)
+    for HPOnode in predictedHpoTerms:
+        HPOterm = HPOnode.id
+        if HPOterm in uni2hpoDict[sequence_id]:
+            HPOnode.TruePrediction = True
+    return predictedHpoTerms
     
 reducedSequences, sequenceCluster = reduce_sequences()
 cross_validate(reducedSequences, 10)
