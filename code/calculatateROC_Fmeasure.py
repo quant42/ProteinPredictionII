@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-
+import sys
 validationResults = '../data/validationResults'
 
 def fMeasure(validationResults, steps=10):
     maxConf = -99999
     minConf = +99999
+
+    ROCpoints = []
     
     for line in open(validationResults):
         if line.startswith('*'):
@@ -18,7 +20,6 @@ def fMeasure(validationResults, steps=10):
     F_max = 0
     for i in range(steps+1):
         confidenceLevel = (1.0/steps)*i
-        print 'min confidence:', confidenceLevel
         TP, FP, FN = 0, 0, 0        
         for line in open(validationResults):
             if line.startswith('*'):
@@ -40,16 +41,17 @@ def fMeasure(validationResults, steps=10):
         try:
             precision = float(TP)/(TP+FP)
             recall = float(TP)/(TP+FN)
-            print precision, recall
+            ROCpoints.append((recall,precision))
         except:
-            print TP, FP, FN
+            sys.stderr.write("Error calculating precision or recall\nTP: %s,FP: %s,FN: %s\n"%(TP, FP, FN))
         try:
             f = (2.0*precision*recall)/(precision+recall)
             if f > F_max:
                 F_max = f
-            
         except Exception:
             pass
-    return F_max
-f_max = fMeasure(validationResults, steps=10)
+    return F_max, ROCpoints
+f_max, ROCpoints = fMeasure(validationResults, steps=10)
 print "F-measure =", f_max
+for rec, pre in ROCpoints:
+    print "%s;%s"%(rec, pre)
