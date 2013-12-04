@@ -24,7 +24,7 @@ def featAvgEValue(predictor, node, graph, querySequence):
     sumAttrEVal += attr[ "hit_value" ]
   return sumAttrEVal / cAttrs
 
-# Feature: The best hit value
+# Feature: The best hit length
 def featMaxEValueHitLength(predictor, node, graph, querySequence):
   maxEVal, maxHitLength = None, 0
   for hit, attr in node.attributes.iteritems():
@@ -36,8 +36,26 @@ def featMaxEValueHitLength(predictor, node, graph, querySequence):
       maxEVal, maxHitLength = attrEVal, attrHitLength
   return maxHitLength
 
+# Feature: The longest hit length
+def featLongestHitLength(predictor, node, graph, querySequence):
+  longestHitLength = 0
+  for hit, attr in node.attributes.iteritems():
+    attrHitLength = attr[ "hit_to" ] + 1 - attr[ "hit_from" ]
+    longestHitLength = max(longestHitLength, attrHitLength)
+  return longestHitLength
+
+# Feature: average hit length
+def featAverageHitLength(predictor, node, graph, querySequence):
+  sum, nr = 0, len(node.attributes)
+  for hit, attr in node.attributes.iteritems():
+    sum += attr[ "hit_to" ] + 1 - attr[ "hit_from" ]
+  return sum / nr
+
+# Feature: 
+#def feat(predictor, node, graph, querySequence):
+#  pass
+
 # some helper functions, for the feature functions
-def foo():
+def getSequenceByHitId(id):
+#  [ "hit_id" ]
   pass
-
-
