@@ -26,7 +26,7 @@ def featAvgEValue(predictor, node, graph, querySequence):
 
 # Feature: the average E-Value
 def featProdEValue(predictor, node, graph, querySequence):
-  prodAttrEVal = 1.0
+  sumAttrEVal = 1.0
   for hit, attr in node.attributes.iteritems():
     sumAttrEVal *= attr[ "hit_value" ]
   return sumAttrEVal
@@ -63,7 +63,7 @@ def featNodeSamelvl(predictor, node, graph, querySequence):
   parents = graph.getParents(node)
   childs = []
   for p in parents:
-    child.extend(graph.getChildrens(p))
+    childs.extend(graph.getChildrens(p))
   return len(list(set(childs)))
 
 # Feature: 
