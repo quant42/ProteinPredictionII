@@ -24,6 +24,13 @@ def featAvgEValue(predictor, node, graph, querySequence):
     sumAttrEVal += attr[ "hit_value" ]
   return sumAttrEVal / cAttrs
 
+# Feature: the average E-Value
+def featProdEValue(predictor, node, graph, querySequence):
+  prodAttrEVal = 1.0
+  for hit, attr in node.attributes.iteritems():
+    sumAttrEVal *= attr[ "hit_value" ]
+  return sumAttrEVal
+
 # Feature: The best hit length
 def featMaxEValueHitLength(predictor, node, graph, querySequence):
   maxEVal, maxHitLength = None, 0
