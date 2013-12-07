@@ -3,6 +3,25 @@
 # ok, this is a file containing all features that will be used by the predictor.py to predict if the hpo term is correct for this sequence or not
 # note, that all feature functions starts with feat
 
+# Feature: The sequence length of the query
+def featQuerySequenceLength(predictor, node, graph, querySequence):
+  return len(querySequence)
+
+# Feature: the coverage of the query sequence to all hit sequences
+def featLengthCoverage(predictor, node, graph, querySequence):
+  cov = []
+  for i in querySequence:
+    cov.append( False )
+  for hit, attr in node.attributes.iteritems():
+    for i in range(attr[ "hit_from" ] - 1, attr[ "hit_to" ]):
+      i = True
+  l = 0
+  for i in cov:
+    if i:
+      l += 1
+  return l * 100.0 / len(querySequence)
+
+# Feature: return the best E-Value of all sequences
 def featMinEValue(predictor, node, graph, querySequence):
   minEVal = None
   for hit, attr in node.attributes.iteritems():
