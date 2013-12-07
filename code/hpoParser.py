@@ -340,13 +340,13 @@ class HpoGraph():
     for key in self.hpoTermsDict:
       self.hpoTermsDict[key].attributes.update( dict )
   
-  def getAcceptedNodes( self ):
+  def getAcceptedNodes( self, convidence = 0.0 ):
     
     """ returns all accepted nodes from this graph """
     
     nodes = []
     for node in self.hpoTermsDict:
-      if node.accepted:
+      if node.accepted >= convidence:
         nodes.append( node )
     return nodes
   
