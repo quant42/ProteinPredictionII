@@ -10,7 +10,7 @@ def featMinEValue(predictor, node, graph, querySequence):
     if minEVal == None:
       minEVal = attrEVal
     else:
-      minEVal = min(maxEVal, attrEVal)
+      minEVal = min(minEVal, attrEVal)
   return minEVal
 
 # Feature: the number of hits

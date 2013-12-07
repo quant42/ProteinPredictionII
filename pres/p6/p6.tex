@@ -39,7 +39,7 @@
 	\frametitle{Features}
 	\begin{itemize}
 		\item use neural network to calculate confidence per node
-		\item each node is assigned features derived from the merged tree
+		\item each node is assigned $x$ features derived from the merged tree
 		\item[] \begin{itemize}
 					\item number of hits
 					\item min. E-value	
@@ -53,35 +53,73 @@
 
 \begin{frame}
 	\frametitle{Network architecture}
-	\begin{tikzpicture}
+	\begin{tikzpicture}[scale=1]
 	
 	%input nodes
 	\node[draw, circle] (f1) at (0,4){$f_1$};
 	\node[draw, circle] (f2) at (0,3){$f_2$};
 	\node[draw, circle] (f3) at (0,2){$f_3$};
-	\node[draw, circle] (f4) at (0,1){$f_4$};
 	\node[] at (0,0){$\vdots$};
+	\node[] (fn) at (0,-1){$f_n$};
 	
 	%first hidden level
-	\node[draw, circle] (h11) at (2,3.5){$h_{11}$};
-	\node[draw, circle] (h12) at (2,2.5){$h_{12}$};
-	\node[draw, circle] (h13) at (2,1.5){$h_{13}$};
-	\node[] at (2,0.5){$\vdots$};	
+	\node[draw, circle] (h11) at (2,4.5){$h_{11}$};
+	\node[draw, circle] (h12) at (2,3.5){$h_{12}$};
+	\node[draw, circle] (h13) at (2,2.5){$h_{13}$};
+	\node[] at (2,0.5){$\vdots$};
+	\node[] (h1n) at (2,-1){$h_{1(n+1)}$};	
 	
 	%second hidden level
 	\node[draw, circle] (h21) at (4,2.5){$h_{21}$};
 	\node[draw, circle] (h22) at (4,1.5){$h_{22}$};
-	\node[draw, circle] (h23) at (4,0.5){$h_{22}$};
+	\node[draw, circle] (h23) at (4,0.5){$h_{23}$};
 	
 	
 	%output level
 	\node[draw, circle] (o1) at (6,2){$o_{1}$};
-	\node[draw, circle] (o2) at (6,1){$o_{2}$};
+	\node[draw, circle] (o2)at (6,1){$o_{2}$};
+	
+	\draw (f1.east) -- (h11.west);
+	\draw (f1.east) -- (h12.west);
+	\draw (f1.east) -- (h13.west);
+	\draw (f1.east) -- (2,1);
 
+	\draw (f2.east) -- (h11.west);
+	\draw (f2.east) -- (h12.west);
+	\draw (f2.east) -- (h13.west);
+	\draw (f2.east) -- (2,1);
+
+	\draw (f3.east) -- (h11.west);
+	\draw (f3.east) -- (h12.west);
+	\draw (f3.east) -- (h13.west);
+	\draw (f3.east) -- (2,1);
+	
+	\draw (h11.east) -- (h21.west);
+	\draw (h11.east) -- (h22.west);
+	\draw (h11.east) -- (h23.west);
+
+	\draw (h12.east) -- (h21.west);
+	\draw (h12.east) -- (h22.west);
+	\draw (h12.east) -- (h23.west);
+
+	\draw (h13.east) -- (h21.west);
+	\draw (h13.east) -- (h22.west);
+	\draw (h13.east) -- (h23.west);
+	
+	\draw (h21.east) -- (o1.west);
+	\draw (h21.east) -- (o2.west);
+	
+	\draw (h22.east) -- (o1.west);
+	\draw (h22.east) -- (o2.west);
+	
+	\draw (h23.east) -- (o1.west);
+	\draw (h23.east) -- (o2.west);
+	
 	\end{tikzpicture}
 
 	\hfill\\
 	\begin{itemize}
+		\item fully connected net with two hidden layers
 		\item two output nodes trained for the two possible predictions
 		\item difference of predictions as confidence
 	\end{itemize}	

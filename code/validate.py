@@ -106,8 +106,9 @@ def cross_validate(sequences, folds = 10):
 
         predictions = allPredictions[-1]
         print '***fold %s (FN = %s):***'%((i+1), predictions[1])
-        for predictedNode in predictions[0]:
-            print predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
+        for predictedSequence, predictedTerms in predictions[0]:
+                for predictedNode in predictedTerms:
+                    print predictedSequence, predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
 
         if shortcut:
             break
@@ -183,9 +184,6 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
         else:
             graph += subtree
     for hit in hhblitsResults.hits:
-        if hit['hit_id'] in reserved:
-            out.writeDebug('Skip hit %s in database that is in the test data'%(hit['hit_id']))
-            continue
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         if graph == None:
@@ -204,7 +202,7 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
             ValidPrediction = False
             if node in uni2hpoDict[name]:
                 ValidPrediction = True
-            node.querySequence = seq
+            graph.hpoTermsDict[node].querySequence = seq
             # copy node attributes for training
             trainingNodes.append((graph.hpoTermsDict[node].copy(), ValidPrediction))
             
@@ -221,7 +219,7 @@ def predict_set(hpoGraph, uni2hpoDict, dataset, predictor):
         predictedHpoTerms = predictSequence(hpoGraph, uni2hpoDict, dataset, name=sequence_id, seq=sequence, predictor=predictor)
         validatedTerms, numberOfTrueTermsNeverConsidered = validateTerms(predictedHpoTerms, sequence_id, uni2hpoDict)
         allFN += numberOfTrueTermsNeverConsidered
-        allValidatedPredictions.extend(validatedTerms)
+        allValidatedPredictions.append((sequence_id,validatedTerms))
         if shortcut:
             break
     return (allValidatedPredictions, allFN)
@@ -245,8 +243,8 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
     #for representative, sequence in dataset['crossTrain']:
     #    reserved = reserved | sequenceCluster[representative]
         
-    for representative, sequence in dataset['test']:
-        reserved = reserved | sequenceCluster[representative]   
+    #for representative, sequence in dataset['test']:
+    #    reserved = reserved | sequenceCluster[representative]   
 
     
     # build and merge trees
@@ -279,6 +277,7 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
         for nodeID, node in graph.hpoTermsDict.iteritems():
             if nodeID == 'HP:0000001':
                 continue
+            node.querySequence = seq
             # get the nodes
             terms.add(node.copy())
     hpoGraph.clearAttr()
