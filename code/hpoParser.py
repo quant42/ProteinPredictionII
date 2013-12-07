@@ -230,7 +230,7 @@ class HpoGraph():
     # return this
     return result
   
-  def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleFillFalse = "red", circleFillTrue = "green", circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
+  def writeSvgImage(self, fileName = "graph.svg", addAttrs = True, xGap = 200, yGap = 150, circleR = 5, circleStroke = "black", circleStrokeWidth = 1, lineColor = "black", lineWidth = 2, textColor = "green"):
     
     """ create an svg image of this graph for better discussions """
     
@@ -315,10 +315,11 @@ class HpoGraph():
       for n in l:
         n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
         n_ = self.getHpoTermById( n )
-        if n_.accepted:
-          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFillTrue) )
+        hexVal = hex(50 + min(abs(n_.accepted), 2) * 100)[2:]
+        if n_.accepted > 0:
+          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, "#00{}00".format(hexVal)) )
         else:
-          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, circleFillFalse) )
+          f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, "#{}0000".format(hexVal)) )
     # svg eof
     f.write("</svg>\n")
     f.close()
@@ -392,18 +393,19 @@ class HpoTerm():
 
 if __name__ == "__main__":
   graph = HpoGraph()
-  print "HP:0000008" in graph.getLeaves()
+#  print "HP:0000008" in graph.getLeaves()
 #  print dir(graph.getHpoTermById("HP:0000008"))
 #  print graph.getHpoTermById("HP:0000008").is_a
 #  print len(graph.hpoTermsDict)
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {1:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {2:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {3:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {4:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {5:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {6:0})
-  sub1 = graph.getHpoSubGraph(["HP:0000008"], {7:0})
-  sub2 = graph.getHpoSubGraph(["HP:0009979"], {2:3})
+  sub1 = graph.getHpoSubGraph(["HP:0000008"])
+  sub1.writeSvgImage()
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {2:0})
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {3:0})
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {4:0})
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {5:0})
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {6:0})
+#  sub1 = graph.getHpoSubGraph(["HP:0000008"], {7:0})
+#  sub2 = graph.getHpoSubGraph(["HP:0009979"], {2:3})
 #  print(sub1.hpoTermsDict)
 #  print(sub2.hpoTermsDict)
 #  g = (sub1 - sub2)
