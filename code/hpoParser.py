@@ -345,7 +345,7 @@ class HpoGraph():
     """ returns all accepted nodes from this graph """
     
     nodes = []
-    for node in self.hpoTermsDict:
+    for nodeId, node in self.hpoTermsDict.iteritems():
       if node.accepted >= convidence:
         nodes.append( node )
     return nodes

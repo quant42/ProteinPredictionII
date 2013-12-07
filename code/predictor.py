@@ -54,18 +54,19 @@ class Predictor():
     
     for cNodeID, cNode in graph.hpoTermsDict.iteritems():
       # ok, get the node to predict
-      
+      out.writeDebug("Perform prediction for node: {}".format(cNode.id))
       # get all features for the current node
       featuresValue = []
       for feature in self.features:
         featuresValue.append(feature(self, cNode, graph, querySequence))
       # ok, now run the neuronal network
       predictionResult = self.net.activate(featuresValue)
-      out.writeLog("Prediction result for node {} = {}".format(cNode.id, predictionResult))
+      out.writeDebug("Prediction result for node {} = {}".format(cNode.id, predictionResult))
       # check the prediction result
       # difference should be between -2 (lowest confidence) and 2 (highest confidence)
       # ideally, the predictionResult is (1,-1) for accepted, (-1,1) for not accepted
       confidence =  predictionResult[0] - predictionResult[1]
+      out.writeDebug("Prediction result: {}".format(confidence))
       # ok, set accepted attribute to confidence
       cNode.accepted = confidence
       

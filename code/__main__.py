@@ -101,7 +101,7 @@ try:
       
       # do the output
       for node in graph.getAcceptedNodes( args.minimalConfidence ):
-        out.writeOutput("{}\t{}\t{}".format(name, node.id, (hpoGraph.getElementById(node).accepted + 2) / 4))
+        out.writeOutput("{}\t{}\t{}".format(name, node.id, "%.*f" % (2, (node.accepted + 2) / 4)))
       
       # svg image desired?
       if args.createSvgImage:
