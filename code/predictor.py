@@ -44,13 +44,13 @@ class Predictor():
     
     """ this function marks all nodes in the graph as accepted, if the prediction they are predicted to be positive, Note, that node.accpeted should be false for all nodes.
     This function set the node.accpeted = True, for all nodes that are accepted by the predictor. """
-    def acceptNodeAndParentNodes(graph, node):
-      node.accepted = True
-      stack = graph.getParents(node)
-      while len(stack) != 0:
-        cNode = graph.getHpoTermById(stack.pop())
-        cNode.accepted = True
-        stack.extend(graph.getParents(cNode))
+#    def acceptNodeAndParentNodes(graph, node):
+#      node.accepted = True
+#      stack = graph.getParents(node)
+#      while len(stack) != 0:
+#        cNode = graph.getHpoTermById(stack.pop())
+#        cNode.accepted = True
+#        stack.extend(graph.getParents(cNode))
     
     for cNodeID, cNode in graph.hpoTermsDict.iteritems():
       # ok, get the node to predict
