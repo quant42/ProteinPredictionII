@@ -6,9 +6,9 @@
 <line x1="20" y1="620" x2="20" y2="470" style="stroke: black; stroke-width: 2" />
 <line x1="20" y1="770" x2="20" y2="620" style="stroke: black; stroke-width: 2" />
 <text x="30" y="20" fill="green" style="font-size: 18px">HP:0000001</text>
-<text x="35" y="342" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="35" y="42" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
 <text x="30" y="170" fill="green" style="font-size: 18px">HP:0000118</text>
-<text x="35" y="342" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="35" y="192" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
 <text x="30" y="320" fill="green" style="font-size: 18px">HP:0000924</text>
 <text x="35" y="342" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
 <text x="30" y="470" fill="green" style="font-size: 18px">HP:0011842</text>
