@@ -1,6 +1,7 @@
 \documentclass{beamer}
 
 \usepackage[utf8]{inputenc}
+\usepackage{tikz}
 \author{Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori}
 \title{TermBrain}
 \subtitle{the HPO term predictor}
@@ -52,16 +53,64 @@
 
 \begin{frame}
 	\frametitle{Network architecture}
-	graph here\\
-	\hfill\\
+	\begin{tikzpicture}
+	
+	%input nodes
+	\node[draw, circle] (f1) at (0,4){$f_1$};
+	\node[draw, circle] (f2) at (0,3){$f_2$};
+	\node[draw, circle] (f3) at (0,2){$f_3$};
+	\node[draw, circle] (f4) at (0,1){$f_4$};
+	\node[] at (0,0){$\vdots$};
+	
+	%first hidden level
+	\node[draw, circle] (h11) at (2,3.5){$h_{11}$};
+	\node[draw, circle] (h12) at (2,2.5){$h_{12}$};
+	\node[draw, circle] (h13) at (2,1.5){$h_{13}$};
+	\node[] at (2,0.5){$\vdots$};	
+	
+	%second hidden level
+	\node[draw, circle] (h21) at (4,2.5){$h_{21}$};
+	\node[draw, circle] (h22) at (4,1.5){$h_{22}$};
+	\node[draw, circle] (h23) at (4,0.5){$h_{22}$};
+	
+	
+	%output level
+	\node[draw, circle] (o1) at (6,2){$o_{1}$};
+	\node[draw, circle] (o2) at (6,1){$o_{2}$};
+
+	\end{tikzpicture}
+
 	\hfill\\
 	\begin{itemize}
 		\item two output nodes trained for the two possible predictions
 		\item difference of predictions as confidence
-	\end{itemize}
+	\end{itemize}	
+\end{frame}
+
+\begin{frame}
+	\frametitle{Validation}
 	
-		
+	\begin{itemize}
+		\item Inspection of the dataset shows: Most sequences have pairwise similarity $< 80\%$
+		\item[] $\Rightarrow$ reduce set at $80\%$-level to remove highly similar clusters
+		\item Crossvalidate over reduced set but allow non-reduced trainingset for similarity search during testing
+		\item Calculate precision and recall per test sequence and average over all sequences
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Results}
+	Pre-Rec-Curve here\\
+	\hfill\\
+	\hfill\\
+	\hfill\\
+	\begin{itemize}
+		\item F-measure $yy$ (at confidence level $x$)
+		\item Precision (at same confidence level $x$)
+		\item Recall (at same confidence level $x$)
+	\end{itemize}		
 	
 \end{frame}
+
 
 \end{document}
