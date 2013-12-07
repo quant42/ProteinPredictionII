@@ -251,6 +251,8 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
         else:
             graph += subtree
     for hit in hhblitsResults.hits:
+        if hit['hit_id'] in reserved:
+            continue
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         if graph == None:
