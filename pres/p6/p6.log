@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.9.24)  7 DEC 2013 13:34
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2013.9.24)  7 DEC 2013 13:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1062,6 +1062,8 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 
 ] [4
 
+] [5
+
 ]
 \tf@nav=\write6
 \openout6 = `p6.nav'.
@@ -1072,12 +1074,12 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 \tf@snm=\write8
 \openout8 = `p6.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 53.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 53.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 67.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 67.
 
 (./p6.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 53.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 53.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 67.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 67.
 Package rerunfilecheck Info: File `p6.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -1085,13 +1087,13 @@ Package rerunfilecheck Info: File `p6.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 53.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 67.
  ) 
 Here is how much of TeX's memory you used:
- 15562 strings out of 495007
- 285836 string characters out of 3179690
+ 15566 strings out of 495007
+ 285869 string characters out of 3179690
  362401 words of memory out of 3000000
- 18380 multiletter control sequences out of 15000+200000
+ 18382 multiletter control sequences out of 15000+200000
  12016 words of font info for 45 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  49i,14n,53p,391b,545s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1100,10 +1102,10 @@ r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb>
-Output written on p6.pdf (4 pages, 52973 bytes).
+Output written on p6.pdf (5 pages, 55063 bytes).
 PDF statistics:
- 139 PDF objects out of 1000 (max. 8388607)
- 122 compressed objects within 2 object streams
- 9 named destinations out of 1000 (max. 500000)
+ 164 PDF objects out of 1000 (max. 8388607)
+ 146 compressed objects within 2 object streams
+ 11 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

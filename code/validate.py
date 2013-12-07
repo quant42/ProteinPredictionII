@@ -158,10 +158,11 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
 
     # set of hits to ignore to avoid information leakage
     reserved = set([])
-
+    reserved.add(name)
+    
     # add the sequences in the associated clusters
-    for representative, sequence in dataset['crossTrain']:
-        reserved = reserved | sequenceCluster[representative]
+    #for representative, sequence in dataset['crossTrain']:
+    #    reserved = reserved | sequenceCluster[representative]
         
     for representative, sequence in dataset['test']:
         reserved = reserved | sequenceCluster[representative]   
@@ -235,13 +236,13 @@ def predictSequence(hpoGraph, uni2hpoDict, dataset, name="Sequence", seq="", pre
 
     # set of hits to ignore to avoid information leakage
     reserved = set([])
-
+    reserved.add(name)
     # add the sequences in the associated clusters
-    for representative, sequence in dataset['crossTrain']:
-        reserved = reserved | sequenceCluster[representative]
+    #for representative, sequence in dataset['crossTrain']:
+    #    reserved = reserved | sequenceCluster[representative]
         
-    for representative, sequence in dataset['test']:
-        reserved = reserved | sequenceCluster[representative]   
+    #for representative, sequence in dataset['test']:
+    #    reserved = reserved | sequenceCluster[representative]   
 
     
     # build and merge trees
