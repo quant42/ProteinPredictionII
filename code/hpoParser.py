@@ -388,6 +388,7 @@ class HpoTerm():
     copyTerm.accepted = self.accepted
     copyTerm.TruePrediction = self.TruePrediction
     copyTerm.id = self.id
+    copyTerm.querySequence = self.querySequence
 
     return copyTerm
 
