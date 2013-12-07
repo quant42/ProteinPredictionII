@@ -5,7 +5,7 @@ import out
 try:
   # import stuff
   from Bio import SeqIO
-  import argparse, blast, hhblits, map, hpoParser, os, blast, hhblits, sys
+  import argparse, blast, hhblits, map, hpoParser, os, blast, hhblits, sys, predictor
   
   # do commandline parsing
   parser = argparse.ArgumentParser(description='This program should predict the function of proteins.')
@@ -20,6 +20,8 @@ try:
   parser.add_argument("-l", "--hhblitsDb", dest="hhblitsDbFile", type=str, default="../data/PP2db", required=False, help="The path to the hhblits db file!")
   parser.add_argument("-c", "--uniprot2Hpo", dest="uni2hpo", type=str, default="../data/UniProt_2_HPO", required=False, help="A dictionary file for converting sequence identifiers to HPO-Terms!")
   parser.add_argument("-e", "--blastMinEVal", dest="blastMinEVal", type=float, default=1.0, required=False, help="The minimal E-Value all hits should have (default = 1)!")
+  parser.add_argument("-n", "--neuronalNetwork", dest="neuronalNet", type=str, default="../data/neuronalNetwork.dat", required=False, help="The file containing the neuronal network that should be used by the predictor!")
+  parser.add_argument("--minConf", dest="minimalConfidence", type=float, default=0.0, required=False, help="The minimal confidance value an accepted node should have; [from -2 to 2] (default: 0.0)!")
   args = parser.parse_args()
   
   # init output format
@@ -47,8 +49,11 @@ try:
     uni2hpoDict.update( { line.split("\t")[0] : line.split("\t")[1].split(",") } )
   f.close()
   
+  # init the predictor
+  predictor = predictor.Predictor(args.neuronalNet)
+  
   # prediction method
-  def predictSequence(args, hpoGraph, uni2hpoDict, name="Sequence", seq=""):
+  def predictSequence(args, hpoGraph, predictor, uni2hpoDict, name="Sequence", seq=""):
     # ok, do the whole thing
     try:
       # debug msg
@@ -58,7 +63,7 @@ try:
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
       for hit in blastResults.hits:
         out.writeDebug( "Blast: found hit: " + str( hit ) )
-      hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=seq, database=args.hhblitsDbFile)
+      hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=str(seq), database=args.hhblitsDbFile)
       for hit in hhblitsResults.hits:
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
@@ -78,30 +83,25 @@ try:
       
       # build and merge trees
       out.writeDebug("Build and merge tree for similar sequences!")
-      graph, hit_id = None, 0
+      graph, hit_id = hpoGraph.getHpoSubGraph( hpoGraph.getRoot() ), 0
       for hit in blastResults.hits:
+        out.writeDebug("@blast merging: {}".format(hit))
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
-        if graph == None:
-          graph = subtree
-        else:
-          graph += subtree
+        graph += subtree
       for hit in hhblitsResults.hits:
+        out.writeDebug("@hhblits merging: {}".format(hit))
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
-        if graph == None:
-          graph = subtree
-        else:
-          graph += subtree
+        graph += subtree
       
       # do the prediciton
       out.writeDebug("Run main prediction!")
-      # TODO: implement a better predictor - for example with an neuronal network (pyBrain etc.)
-      # accept those with more than two results
-      if graph != None:
-        for node in graph.hpoTermsDict:
-          if len( graph.hpoTermsDict[ node ].attributes ) > 2:
-            graph.hpoTermsDict[ node ].accepted = True
+      predictor.runprediction(seq, graph)
+      
+      # do the output
+      for node in graph.getAcceptedNodes( args.minimalConfidence ):
+        out.writeOutput("{}\t{}\t{}".format(name, node.id, (hpoGraph.getElementById(node).accepted + 2) / 4))
       
       # svg image desired?
       if args.createSvgImage:
@@ -120,16 +120,23 @@ try:
       exit(1)
     pass
   
+  # printheader output
+  out.writeOutput("AUTHOR TEAM_NAME")
+  out.writeOutput("MODEL\t1")
+  out.writeOutput("KEYWORDS clinical data, synteny.")
+  
   # ok, do the whole thing
   if args.sequence != None:
-    predictSequence(args, hpoGraph, uni2hpoDict, seq=args.sequence)
+    predictSequence(args, hpoGraph, predictor, uni2hpoDict, seq=args.sequence)
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=str(record.seq))
+      predictSequence(args, hpoGraph, predictor, uni2hpoDict, name=record.id, seq=str(record.seq))
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")
+  
+  out.writeOutput("END")
   
   # quit without error code
   exit(0)

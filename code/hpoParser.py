@@ -315,7 +315,7 @@ class HpoGraph():
       for n in l:
         n1 = calcNodePos(lvl, n, w, h, xGap, yGap)
         n_ = self.getHpoTermById( n )
-        hexVal = hex(50 + min(abs(n_.accepted), 2) * 100)[2:]
+        hexVal = hex(int(50 + min(abs(n_.accepted), 2) * 100))[2:]
         if n_.accepted > 0:
           f.write( getCircleCode(n1[0], n1[1], circleR, circleStroke, circleStrokeWidth, "#00{}00".format(hexVal)) )
         else:
