@@ -81,7 +81,7 @@ class Predictor():
     for node, target in data:
       featuresValue = []
       for feature in self.features:
-        featuresValue.append(feature(self, node, None, ''))
+        featuresValue.append(feature(self, node, None, node.querySequence))
         
       if target:
         reduced_dataset[0].add(tuple(featuresValue+[ACCEPTED, NOTACCEPTED]))        
