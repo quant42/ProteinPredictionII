@@ -59,12 +59,12 @@ def featAverageHitLength(predictor, node, graph, querySequence):
   return sum / nr
 
 # Feature: number of nodes on the same level
-def featNodeSamelvl(predictor, node, graph, querySequence):
-  parents = graph.getParents(node)
-  childs = []
-  for p in parents:
-    childs.extend(graph.getChildrens(p))
-  return len(list(set(childs)))
+#def featNodeSamelvl(predictor, node, graph, querySequence):
+#  parents = graph.getParents(node)
+#  childs = []
+#  for p in parents:
+#    childs.extend(graph.getChildrens(p))
+#  return len(list(set(childs)))
 
 # Feature: 
 #def feat(predictor, node, graph, querySequence):

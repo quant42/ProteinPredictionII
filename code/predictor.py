@@ -69,7 +69,7 @@ class Predictor():
       # ok, set accepted attribute to confidence
       cNode.accepted = confidence
       
-  def trainprediction(self, data=None, biased=False):
+  def trainprediction(self, data=None, biased=False, maxEpochs = 10000):
     """Trains the neural network with the provided trainings data and returns true, if the training was successful"""
     if not data:
       out.writeDebug('No training data! The net stays initialized with random weights!')
@@ -100,7 +100,7 @@ class Predictor():
         ds.addSample(instance[:-2],instance[-2:])
     out.writeDebug('Start training neural net with %s training examples. Dataset bias is set to %s'%(len(ds), biased ))
     trainer = BackpropTrainer(self.net, ds)
-    trainer.trainUntilConvergence(maxEpochs = 10000)
+    trainer.trainUntilConvergence(maxEpochs = maxEpochs)
     
     return True      
   

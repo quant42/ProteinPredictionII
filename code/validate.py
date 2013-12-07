@@ -103,13 +103,19 @@ def cross_validate(sequences, folds = 10):
         predictor.saveNeuronalNetwork('neuronalNetwork_Fold%s'%i)
         # test the parameters on the independent test fold
         allPredictions.append(predict_set(hpoGraph, uni2hpoDict, dataset, predictor))
+
+        predictions = allPredictions[-1]
+        print '***fold %s (FN = %s):***'%((i+1), predictions[1])
+        for predictedNode in predictions[0]:
+            print predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
+
         if shortcut:
             break
         
-    for fold, predictions in enumerate(allPredictions):
-        print '***fold %s (FN = %s):***'%((fold+1), predictions[1])
-        for predictedNode in predictions[0]:
-            print predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
+    #for fold, predictions in enumerate(allPredictions):
+    #    print '***fold %s (FN = %s):***'%((fold+1), predictions[1])
+    #    for predictedNode in predictions[0]:
+    #        print predictedNode.id, predictedNode.accepted, predictedNode.TruePrediction
     
 def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     out.writeDebug('Start training the predictor.')
@@ -121,9 +127,10 @@ def learn_parameters(hpoGraph, uni2hpoDict, dataset):
     trainingNodes = train_result_set(hpoGraph, uni2hpoDict, crossTrainSet)
     out.writeDebug('Collected all the nodes for training')
     
-    if not shortcut:
+    if shortcut:
+        neuralNet.trainprediction(trainingNodes, maxEpochs = 10)
+    else:
         neuralNet.trainprediction(trainingNodes)
-        pass
 
     return neuralNet
 

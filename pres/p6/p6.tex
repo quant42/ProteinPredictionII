@@ -1,0 +1,53 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\author{Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori}
+\title{TermBrain}
+\subtitle{the HPO term predictor}
+\date{\today}
+%\usepackage{default}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Homology based function prediction}
+  General approach:
+  \begin{itemize}
+  	\item Search for annotated similar sequences\\with blast and hhblits (hits)
+  	\item Build subgraph of HPO containing the found annotations
+  	\item Calculate confidence for every annotation from some distance measure to the hits
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Preparations}
+		\begin{itemize}
+			\item Prepare databases for annotated sequences
+			\item Represent HPO Graph in predictor
+			\item Merge trees corresponding to hits
+		\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Features}
+	\begin{itemize}
+		\item use neural network to calculate confidence per node
+		\item each node is assigned features derived from the merged tree
+		\item[] \begin{itemize}
+					\item number of hits
+					\item min. E-value	
+					\item avg. E-value \qquad[3, 0.0074, 0.45, 84, $\dots$]
+					\item longest hit
+					\item $\dots$ 
+				\end{itemize}
+				\item[] 
+	\end{itemize}
+\end{frame}
+
+\end{document}

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-validationResults = '../data/validationResults'
+validationResults = '../data/validationResults_3'
 
 def fMeasure(validationResults, steps=10):
     maxConf = -99999
