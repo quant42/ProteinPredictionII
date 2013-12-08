@@ -14,7 +14,7 @@ out.supressOutput = False
 out.outputFormat = 'bash'
 # to speed up the process for testing purposes, set shortcut to True
 # then, only 
-shortcut = 1
+shortcut = 0
 
 blastDbFile = '../data/genes_UniProt.fasta'
 hhblitsDbFile = '../data/PP2db.cs219'
