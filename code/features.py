@@ -3,6 +3,49 @@
 # ok, this is a file containing all features that will be used by the predictor.py to predict if the hpo term is correct for this sequence or not
 # note, that all feature functions starts with feat
 
+# Feature: the best node method
+def featBestHitMethod(predictor, node, graph, querySequence):
+  minEVal, method = None, None
+  for hit, attr in node.attributes.iteritems():
+    attrEVal = attr[ "hit_value" ]
+    if minEVal == None:
+      minEVal = attrEVal
+      method = attr[ "method" ]
+    elif attrEVal < minEVal:
+      minEVal = attrEVal
+      method = attr[ "method" ]
+  if method == None:
+    return 0
+  if method == "blast":
+    return 1
+  return -1
+
+# Feature: node graph position
+def featNodePositionMin(predictor, node, graph, querySequence):
+  if hasattr(node, "is_a"):
+    if type(node.is_a) == type([]):
+      height = 9999999999999
+      for n in node.is_a:
+        height = min(height, featNodePositionMin(predictor, n, graph, querySequence))
+      return 1 + height
+    else:
+      return 1 + featNodePositionMin(predictor, node.is_a, graph, querySequence)
+  else:
+    return 1
+
+# Feature: node graph position
+def featNodePositionMax(predictor, node, graph, querySequence):
+  if hasattr(node, "is_a"):
+    if type(node.is_a) == type([]):
+      height = 9999999999999
+      for n in node.is_a:
+        height = max(height, featNodePositionMin(predictor, n, graph, querySequence))
+      return 1 + height
+    else:
+      return 1 + featNodePositionMin(predictor, node.is_a, graph, querySequence)
+  else:
+    return 1
+
 # Feature: The sequence length of the query
 def featQuerySequenceLength(predictor, node, graph, querySequence):
   return len(querySequence)

@@ -17,7 +17,7 @@ out.outputFormat = 'bash'
 shortcut = 0
 
 blastDbFile = '../data/genes_UniProt.fasta'
-hhblitsDbFile = '../data/PP2db.cs219'
+hhblitsDbFile = '../data/PP2db'
 hpoFile = '../data/hp.obo'
 hpoMappingFile = '../data/UniProt_2_HPO_full'
 reducedFile = '../data/genes_UniProt_reduced_80.fasta'

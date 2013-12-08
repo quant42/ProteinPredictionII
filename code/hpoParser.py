@@ -389,6 +389,8 @@ class HpoTerm():
     copyTerm.TruePrediction = self.TruePrediction
     copyTerm.id = self.id
     copyTerm.querySequence = self.querySequence
+    copyTerm.is_a = self.is_a
+    copyTerm.childrens = self.childrens
 
     return copyTerm
 
