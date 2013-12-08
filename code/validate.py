@@ -14,7 +14,7 @@ out.supressOutput = False
 out.outputFormat = 'bash'
 # to speed up the process for testing purposes, set shortcut to True
 # then, only 
-shortcut = 0
+shortcut = 1
 
 blastDbFile = '../data/genes_UniProt.fasta'
 hhblitsDbFile = '../data/PP2db.cs219'
@@ -184,6 +184,9 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
         else:
             graph += subtree
     for hit in hhblitsResults.hits:
+        if hit['hit_id'] in reserved:
+            out.writeDebug('Skip hit %s in database that is in the test data'%(hit['hit_id']))
+            continue
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         if graph == None:
