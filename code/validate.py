@@ -184,6 +184,9 @@ def train_result_Sequence(hpoGraph, uni2hpoDict, dataset, name='', seq=''):
         else:
             graph += subtree
     for hit in hhblitsResults.hits:
+        if hit['hit_id'] in reserved:
+            out.writeDebug('Skip hit %s in database that is in the test data'%(hit['hit_id']))
+            continue
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         if graph == None:
