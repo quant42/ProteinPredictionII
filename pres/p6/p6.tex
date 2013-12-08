@@ -34,10 +34,17 @@
 			\item Represent HPO Graph in predictor
 			\item Merge trees corresponding to hits
 		\end{itemize}
-		\includegraphics[width=0.2\textwidth]{p1.jpg}
-		\includegraphics[width=0.1\textwidth]{p2.jpg}
-		\includegraphics[width=0.2\textwidth]{g.jpg}
-
+		\begin{minipage}{0.2\textwidth}
+			\includegraphics[width=\textwidth]{p1.jpg}	
+		\end{minipage}$+$\hspace*{1em}
+		\begin{minipage}{0.1\textwidth}
+			\includegraphics[width=\textwidth]{p2.jpg}\\
+			\vspace*{1.0em}
+		\end{minipage}$\Rightarrow$
+		\begin{minipage}{0.3\textwidth}
+		\includegraphics[width=\textwidth]{g.jpg}
+		\end{minipage}
+		
 		
 \end{frame}
 
@@ -59,6 +66,7 @@
 
 \begin{frame}
 	\frametitle{Network architecture}
+\begin{center}
 	\begin{tikzpicture}[scale=1]
 	
 	%input nodes
@@ -69,36 +77,36 @@
 	\node[] (fn) at (0,-1){$f_n$};
 	
 	%first hidden level
-	\node[draw, circle] (h11) at (2,4.5){$h_{11}$};
-	\node[draw, circle] (h12) at (2,3.5){$h_{12}$};
-	\node[draw, circle] (h13) at (2,2.5){$h_{13}$};
-	\node[] at (2,0.5){$\vdots$};
-	\node[] (h1n) at (2,-1){$h_{1(n+1)}$};	
+	\node[draw, circle] (h11) at (3,4.5){$h_{11}$};
+	\node[draw, circle] (h12) at (3,3.5){$h_{12}$};
+	\node[draw, circle] (h13) at (3,2.5){$h_{13}$};
+	\node[] at (3,0){$\vdots$};
+	\node[] (h1n) at (3,-1){$h_{1(n+1)}$};	
 	
 	%second hidden level
-	\node[draw, circle] (h21) at (4,2.5){$h_{21}$};
-	\node[draw, circle] (h22) at (4,1.5){$h_{22}$};
-	\node[draw, circle] (h23) at (4,0.5){$h_{23}$};
+	\node[draw, circle] (h21) at (6,2.5){$h_{21}$};
+	\node[draw, circle] (h22) at (6,1.5){$h_{22}$};
+	\node[draw, circle] (h23) at (6,0.5){$h_{23}$};
 	
 	
 	%output level
-	\node[draw, circle] (o1) at (6,2){$o_{1}$};
-	\node[draw, circle] (o2)at (6,1){$o_{2}$};
+	\node[draw, circle] (o1) at (9,2){$o_{1}$};
+	\node[draw, circle] (o2)at (9,1){$o_{2}$};
 	
 	\draw (f1.east) -- (h11.west);
 	\draw (f1.east) -- (h12.west);
 	\draw (f1.east) -- (h13.west);
-	\draw (f1.east) -- (2,1);
+	\draw (f1.east)[dashed] -- (3,1);
 
 	\draw (f2.east) -- (h11.west);
 	\draw (f2.east) -- (h12.west);
 	\draw (f2.east) -- (h13.west);
-	\draw (f2.east) -- (2,1);
+	\draw (f2.east)[dashed] -- (3,1);
 
 	\draw (f3.east) -- (h11.west);
 	\draw (f3.east) -- (h12.west);
 	\draw (f3.east) -- (h13.west);
-	\draw (f3.east) -- (2,1);
+	\draw (f3.east)[dashed] -- (3,1);
 	
 	\draw (h11.east) -- (h21.west);
 	\draw (h11.east) -- (h22.west);
@@ -111,6 +119,10 @@
 	\draw (h13.east) -- (h21.west);
 	\draw (h13.east) -- (h22.west);
 	\draw (h13.east) -- (h23.west);
+
+	\draw (3,1)[dashed] -- (h21.west);
+	\draw (3,1)[dashed] -- (h22.west);
+	\draw (3,1)[dashed] -- (h23.west);
 	
 	\draw (h21.east) -- (o1.west);
 	\draw (h21.east) -- (o2.west);
@@ -122,7 +134,7 @@
 	\draw (h23.east) -- (o2.west);
 	
 	\end{tikzpicture}
-
+\end{center}
 	\hfill\\
 	\begin{itemize}
 		\item fully connected net with two hidden layers
