@@ -98,6 +98,9 @@ try:
       # do the prediciton
       out.writeDebug("Run main prediction!")
       predictor.runprediction(seq, graph)
+      # always accept the root
+      for root in hpoGraph.getRoot():
+        graph.getHpoTermById(root).accepted = 1
       
       # do the output
       for node in graph.getAcceptedNodes( args.minimalConfidence ):
