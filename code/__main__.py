@@ -48,16 +48,13 @@ try:
     line = line.strip()
     uni2hpoDict.update( { line.split("\t")[0] : line.split("\t")[1].split(",") } )
   f.close()
-  
-  # init the predictor
-  predictor = predictor.Predictor(args.neuronalNet)
-  
+    
   # prediction method
-  def predictSequence(args, hpoGraph, predictor, uni2hpoDict, name="Sequence", seq=""):
+  def predictSequence(args, hpoGraph, uni2hpoDict, name="Sequence", seq=""):
     # ok, do the whole thing
     try:
       # debug msg
-      out.writeDebug( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
+      out.writeLog( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
       
       # ok, first of all, get similar sequences!
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
@@ -97,6 +94,8 @@ try:
       
       # do the prediciton
       out.writeDebug("Run main prediction!")
+      # init the predictor
+      predictor = predictor.Predictor(args.neuronalNet)
       predictor.runprediction(seq, graph)
       # always accept the root
       for root in hpoGraph.getRoot():
@@ -130,11 +129,11 @@ try:
   
   # ok, do the whole thing
   if args.sequence != None:
-    predictSequence(args, hpoGraph, predictor, uni2hpoDict, seq=args.sequence)
+    predictSequence(args, hpoGraph, uni2hpoDict, seq=args.sequence)
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, hpoGraph, predictor, uni2hpoDict, name=record.id, seq=str(record.seq))
+      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=str(record.seq))
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")

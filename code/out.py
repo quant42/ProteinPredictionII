@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-import sys
+import sys, time, datetime
 
 # function controlling variables
 supressMessage = False
@@ -27,7 +27,8 @@ def writeDebug(string):
     elif outputFormat == "html":
       sys.stderr.write("<span class=\"stream errStream debugMessage\">{}</span><br>\n".format( string ) )
     else:
-      sys.stderr.write("\033[38;5;7m[DEBUG] {}\033[0m\n".format( string ) )
+      time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+      sys.stderr.write("\033[38;5;7m[DEBUG {}] {}\033[0m\n".format( time, string ) )
 
 def writeLog(string):
   if not supressLog:
@@ -36,7 +37,8 @@ def writeLog(string):
     elif outputFormat == "html":
       sys.stderr.write("<span class=\"stream errStream logMessage\">{}</span><br>\n".format( string ) )
     else:
-      sys.stderr.write("\033[38;5;10m[LOG] {}\033[0m\n".format( string ) )
+      time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+      sys.stderr.write("\033[38;5;10m[LOG {}] {}\033[0m\n".format( time, string ) )
 
 def writeWarning(string):
   if not supressWarning:
@@ -45,7 +47,8 @@ def writeWarning(string):
     elif outputFormat == "html":
       sys.stderr.write("<span class=\"stream errStream warningMessage\">{}</span><br>\n".format( string ) )
     else:
-      sys.stderr.write("\033[38;5;11m[WARNING] {}\033[0m\n".format( string ) )
+      time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+      sys.stderr.write("\033[38;5;11m[WARNING {}] {}\033[0m\n".format( time, string ) )
 
 def writeError(string):
   if not supressError:
@@ -54,7 +57,8 @@ def writeError(string):
     elif outputFormat == "html":
       sys.stderr.write("<span class=\"stream errStream errorMessage\">{}</span><br>\n".format( string ) )
     else:
-      sys.stderr.write("\033[38;5;9m[ERROR] {}\033[0m\n".format( string ) )
+      time = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
+      sys.stderr.write("\033[38;5;9m[ERROR {}] {}\033[0m\n".format( time, string ) )
 
 def writeOutput(string):
   if not supressOutput:
