@@ -33,28 +33,30 @@ try:
   out.supressOutput = bool(args.verbosity >> 5 & 1)
   out.outputFormat = args.outputFormat
   
-  # init the hpoParser
-  hpoGraph = None
-  if os.path.isfile(args.hpoFile):
-    hpoGraph = hpoParser.HpoGraph(hpoFile=args.hpoFile)
-  else:
-    out.writeLog("missing hpoFile! Try standard hpoFile in the data directory")
-    hpoGraph = hpoParser.HpoGraph()
-  
   # init the hpo-identifier dict
+  out.writeLog("Build uniprot 2 hpo dictionary")
   uni2hpoDict = {}
   f = open( args.uni2hpo, "r" )
   for line in f:
     line = line.strip()
     uni2hpoDict.update( { line.split("\t")[0] : line.split("\t")[1].split(",") } )
   f.close()
-    
+  
   # prediction method
-  def predictSequence(args, hpoGraph, uni2hpoDict, name="Sequence", seq=""):
+  def predictSequence(args, uni2hpoDict, name="Sequence", seq=""):
     # ok, do the whole thing
     try:
       # debug msg
       out.writeLog( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
+      
+      # init the hpoParser
+      out.writeLog("Build hpoGraph from file")
+      hpoGraph = None
+      if os.path.isfile(args.hpoFile):
+        hpoGraph = hpoParser.HpoGraph(hpoFile=args.hpoFile)
+      else:
+        out.writeLog("missing hpoFile! Try standard hpoFile in the data directory")
+        hpoGraph = hpoParser.HpoGraph()
       
       # ok, first of all, get similar sequences!
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
@@ -116,8 +118,8 @@ try:
           out.writeWarning( "Can't create a svg image from an empty tree!" )
       
       # clear attrs from all tree nodes, so that these don't interfere with later predictions
-      out.writeLog("Clear memory for next prediction")
-      hpoGraph.clearAttr()
+#      out.writeLog("Clear memory for next prediction")
+#      hpoGraph.clearAttr()
       
     except Exception as err:
       exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -132,11 +134,11 @@ try:
   
   # ok, do the whole thing
   if args.sequence != None:
-    predictSequence(args, hpoGraph, uni2hpoDict, seq=args.sequence)
+    predictSequence(args, uni2hpoDict, seq=args.sequence)
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=str(record.seq))
+      predictSequence(args, uni2hpoDict, name=record.id, seq=str(record.seq))
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")
