@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys
-validationResults = '../data/validationResults_4'
+validationResults = '../data/validationResults_5'
 hpoMappingFile = '../data/UniProt_2_HPO_full'
 
 def fMeasure(validationResults, steps=10):
@@ -25,6 +25,8 @@ def fMeasure(validationResults, steps=10):
         elif float(confidence) < minConf:
             minConf = float(confidence)
     F_max = 0
+    pre_max = 0
+    rec_max = 0
     for i in range(steps+1):
         confidenceLevel = (1.0/steps)*i
         precisions = []
@@ -74,10 +76,12 @@ def fMeasure(validationResults, steps=10):
             f = (2.0*precision*recall)/(precision+recall)
             if f > F_max:
                 F_max = f
+                pre_max = precision
+                rec_max = recall
         except Exception:
             pass
-    return F_max, ROCpoints
+    return (F_max, pre_max, rec_max), ROCpoints
 f_max, ROCpoints = fMeasure(validationResults, steps=10)
-print "F-measure =", f_max
+print "F-measure, precision and recall at same confidence =", f_max
 for rec, pre in ROCpoints:
     print "%s;%s"%(rec, pre)
