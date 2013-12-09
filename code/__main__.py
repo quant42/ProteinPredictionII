@@ -32,6 +32,15 @@ try:
   out.supressError = bool(args.verbosity >> 4 & 1)
   out.supressOutput = bool(args.verbosity >> 5 & 1)
   out.outputFormat = args.outputFormat
+
+  # init the hpoParser
+  out.writeLog("Build hpoGraph from file")
+  hpoGraph = None
+  if os.path.isfile(args.hpoFile):
+    hpoGraph = hpoParser.HpoGraph(hpoFile=args.hpoFile)
+  else:
+    out.writeLog("missing hpoFile! Try standard hpoFile in the data directory")
+    hpoGraph = hpoParser.HpoGraph()
   
   # init the hpo-identifier dict
   out.writeLog("Build uniprot 2 hpo dictionary")
@@ -43,20 +52,11 @@ try:
   f.close()
   
   # prediction method
-  def predictSequence(args, uni2hpoDict, name="Sequence", seq=""):
+  def predictSequence(args, hpoGraph, uni2hpoDict, name="Sequence", seq=""):
     # ok, do the whole thing
     try:
       # debug msg
       out.writeLog( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
-      
-      # init the hpoParser
-      out.writeLog("Build hpoGraph from file")
-      hpoGraph = None
-      if os.path.isfile(args.hpoFile):
-        hpoGraph = hpoParser.HpoGraph(hpoFile=args.hpoFile)
-      else:
-        out.writeLog("missing hpoFile! Try standard hpoFile in the data directory")
-        hpoGraph = hpoParser.HpoGraph()
       
       # ok, first of all, get similar sequences!
       blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
@@ -70,13 +70,14 @@ try:
       out.writeLog("uniprot ids ({}) 2 HPO Terms".format( len(blastResults.hits) + len(hhblitsResults.hits) ))
       for hit in blastResults.hits:
         try:
-          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
+# Do not output this, it might be some GB output
+#          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
         except KeyError:
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       for hit in hhblitsResults.hits:
         try:
-          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
+#          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
         except KeyError:
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
@@ -85,12 +86,12 @@ try:
       out.writeLog("Build and merge tree for similar sequences!")
       graph, hit_id = hpoGraph.getHpoSubGraph( hpoGraph.getRoot() ), 0
       for hit in blastResults.hits:
-        out.writeDebug("@blast merging: {}".format(hit))
+#        out.writeDebug("@blast merging: {}".format(hit))
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         graph += subtree
       for hit in hhblitsResults.hits:
-        out.writeDebug("@hhblits merging: {}".format(hit))
+#        out.writeDebug("@hhblits merging: {}".format(hit))
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         graph += subtree
@@ -134,11 +135,11 @@ try:
   
   # ok, do the whole thing
   if args.sequence != None:
-    predictSequence(args, uni2hpoDict, seq=args.sequence)
+    predictSequence(args, hpoGraph, uni2hpoDict, seq=args.sequence)
   elif os.path.isfile(args.fastaFile):
     f = open(args.fastaFile, "rU")
     for record in SeqIO.parse(f, "fasta"):
-      predictSequence(args, uni2hpoDict, name=record.id, seq=str(record.seq))
+      predictSequence(args, hpoGraph, uni2hpoDict, name=record.id, seq=str(record.seq))
     f.close()
   else:
     out.writeError("Error: no sequence to predict given! (wrong path?)")
