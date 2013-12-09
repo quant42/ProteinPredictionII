@@ -9,7 +9,7 @@
 # search. You will get a class which has an attribute significant_hits.
 # ===================================================================
 
-import out, subprocess, re, os, math
+import out, subprocess, re, os, math, random
 class HHBLITS():
   
   """ A basic hmmblits class """
@@ -55,7 +55,7 @@ class HHBLITS():
   def localHHBLITS(seq = "NWLGVKRQPLWTLVLILWPVIIFIILAITRTKFPP", database = "../data/PP2db", minEVal = 1):
     import time
     out.writeDebug("Do a local hhblits search for {} in {}".format( seq, database ) )
-    time_stamp = str(int(time.time()))
+    time_stamp = str(int(time.time())) + str(random.randint(0, 100000000))
     seq_file = ''
     seq = str(seq)
     if re.match('^[A-Z]*$',seq):
