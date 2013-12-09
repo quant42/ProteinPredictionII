@@ -65,6 +65,7 @@ try:
         out.writeDebug( "hhblits: found hit: " + str( hit ) )
       
       # now get the hpo-Identifiers for each similar sequence
+      out.writeLog("uniprot ids 2 HPO Terms")
       for hit in blastResults.hits:
         try:
           out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
@@ -79,7 +80,7 @@ try:
           out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
       
       # build and merge trees
-      out.writeDebug("Build and merge tree for similar sequences!")
+      out.writeLog("Build and merge tree for similar sequences!")
       graph, hit_id = hpoGraph.getHpoSubGraph( hpoGraph.getRoot() ), 0
       for hit in blastResults.hits:
         out.writeDebug("@blast merging: {}".format(hit))
@@ -93,27 +94,29 @@ try:
         graph += subtree
       
       # do the prediciton
-      out.writeDebug("Run main prediction!")
+      out.writeLog("Run main prediction!")
       # init the predictor
-      predictor = predictor.Predictor(args.neuronalNet)
-      predictor.runprediction(seq, graph)
+      p = predictor.Predictor(args.neuronalNet)
+      p.runprediction(seq, graph)
       # always accept the root
       for root in hpoGraph.getRoot():
         graph.getHpoTermById(root).accepted = 1
       
       # do the output
+      out.writeLog("writing output")
       for node in graph.getAcceptedNodes( args.minimalConfidence ):
         out.writeOutput("{}\t{}\t{}".format(name, node.id, "%.*f" % (2, (node.accepted + 2) / 4)))
       
       # svg image desired?
       if args.createSvgImage:
-        out.writeDebug("Create a svg image showing all results!")
+        out.writeLog("Create a svg image showing all results!")
         if graph != None:
           graph.writeSvgImage(fileName = str( name ) + ".svg" )
         else:
           out.writeWarning( "Can't create a svg image from an empty tree!" )
       
       # clear attrs from all tree nodes, so that these don't interfere with later predictions
+      out.writeLog("Clear memory for next prediction")
       hpoGraph.clearAttr()
       
     except Exception as err:
