@@ -5,7 +5,7 @@ import out
 try:
   # import stuff
   from Bio import SeqIO
-  import argparse, blast, hhblits, map, hpoParser, os, blast, hhblits, sys, predictor
+  import argparse, blast, hhblits, map, hpoParser, os, blast, hhblits, sys, predictor, re
   
   # do commandline parsing
   parser = argparse.ArgumentParser(description='This program should predict the function of proteins.')
@@ -21,6 +21,7 @@ try:
   parser.add_argument("-c", "--uniprot2Hpo", dest="uni2hpo", type=str, default="../data/UniProt_2_HPO", required=False, help="A dictionary file for converting sequence identifiers to HPO-Terms!")
   parser.add_argument("-e", "--blastMinEVal", dest="blastMinEVal", type=float, default=1.0, required=False, help="The minimal E-Value all hits should have (default = 1)!")
   parser.add_argument("-n", "--neuronalNetwork", dest="neuronalNet", type=str, default="../data/neuronalNetwork.dat", required=False, help="The file containing the neuronal network that should be used by the predictor!")
+  parser.add_argument("-k", "--lookupdb", dest="lookupdb", type=str, default=None, required=False, help="A file containing precalculated blast and hhblits results!")
   parser.add_argument("--minConf", dest="minimalConfidence", type=float, default=0.0, required=False, help="The minimal confidance value an accepted node should have; [from -2 to 2] (default: 0.0)!")
   args = parser.parse_args()
   
@@ -58,25 +59,41 @@ try:
       # debug msg
       out.writeLog( "Predict function for protein: id: \"" + str( name ) +  "\" sequence: \"" + str( seq ) +"\"" )
       
+      # lookup resulst if available
+      foundInLookUp, hits = False, []
+      if args.lookupdb:
+        out.writeLog( "Checking for precalculated results!" )
+        # ok, load them
+        f = open(args.lookupdb, "r")
+        for line in f:
+          if line.strip() == name.strip():
+            # oh, cool, its precalculated
+            foundInLookUp = True
+          elif foundInLookUp and line.startswith("\t"):
+            # ok, this belongs to result, load it
+            m = re.search('\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)', line)
+            hits.append({ "method" : m.group(1), "hit_id" : m.group(2), "hit_value" : float(m.group(3)), "hit_from" : int(m.group(4)), "hit_to" : int(m.group(5)), "hit_order" : bool(m.group(6)) })
+          elif foundInLookUp:
+            break
+        f.close()
+      
       # ok, first of all, get similar sequences!
-      blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
-      for hit in blastResults.hits:
-        out.writeDebug( "Blast: found hit: " + str( hit ) )
-      hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=str(seq), database=args.hhblitsDbFile)
-      for hit in hhblitsResults.hits:
-        out.writeDebug( "hhblits: found hit: " + str( hit ) )
+      if not foundInLookUp:
+        out.writeLog( "Check blast and hhblits for sequence orthologs!" )
+        blastResults = blast.Blast.localBlast(seq=seq, database=args.blastDbFile, minEVal=args.blastMinEVal)
+        for hit in blastResults.hits:
+          out.writeDebug( "Blast: found hit: " + str( hit ) )
+        hhblitsResults = hhblits.HHBLITS.localHHBLITS(seq=str(seq), database=args.hhblitsDbFile)
+        for hit in hhblitsResults.hits:
+          out.writeDebug( "hhblits: found hit: " + str( hit ) )
+        hits.extend(blastResults.hits)
+        hits.extend(hhblitsResults.hits)
       
       # now get the hpo-Identifiers for each similar sequence
-      out.writeLog("uniprot ids ({}) 2 HPO Terms".format( len(blastResults.hits) + len(hhblitsResults.hits) ))
-      for hit in blastResults.hits:
+      out.writeLog("uniprot ids ({}) 2 HPO Terms".format( len(hits) ))
+      for hit in hits:
         try:
 # Do not output this, it might be some GB output
-#          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
-          hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
-        except KeyError:
-          out.writeWarning( "MISSING HPO TERMS FOR HIT: " + str( hit ) )
-      for hit in hhblitsResults.hits:
-        try:
 #          out.writeDebug("found hpoTerms for " + str( hit[ "hit_id" ] ) + ": " + str( uni2hpoDict[ hit[ "hit_id" ] ] ) )
           hit.update( { "hpoTerms" : uni2hpoDict[ hit[ "hit_id" ] ] } )
         except KeyError:
@@ -85,13 +102,8 @@ try:
       # build and merge trees
       out.writeLog("Build and merge tree for similar sequences!")
       graph, hit_id = hpoGraph.getHpoSubGraph( hpoGraph.getRoot() ), 0
-      for hit in blastResults.hits:
+      for hit in hits:
 #        out.writeDebug("@blast merging: {}".format(hit))
-        subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
-        hit_id += 1
-        graph += subtree
-      for hit in hhblitsResults.hits:
-#        out.writeDebug("@hhblits merging: {}".format(hit))
         subtree = hpoGraph.getHpoSubGraph( hit[ 'hpoTerms' ], { hit_id : hit } )
         hit_id += 1
         graph += subtree
