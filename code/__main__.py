@@ -93,11 +93,7 @@ try:
       # reduce hits if fast prediction
       if args.fast:
         out.writeLog("Reduce hits for faster prediction!")
-<<<<<<< HEAD
         hitsTmp = sorted(hits, key=lambda t: t[ "hit_value" ])
-=======
-        hitsTmp = sorted(hits, key=lambda k : k["hit_value"])
->>>>>>> 72e1098adaf2b8b618ff3472b6d61175534dfc20
         hits = hitsTmp[:6]
       
       # now get the hpo-Identifiers for each similar sequence
