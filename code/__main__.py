@@ -23,6 +23,7 @@ try:
   parser.add_argument("-n", "--neuronalNetwork", dest="neuronalNet", type=str, default="../data/neuronalNetwork.dat", required=False, help="The file containing the neuronal network that should be used by the predictor!")
   parser.add_argument("-k", "--lookupdb", dest="lookupdb", type=str, default=None, required=False, help="A file containing precalculated blast and hhblits results!")
   parser.add_argument("--minConf", dest="minimalConfidence", type=float, default=0.0, required=False, help="The minimal confidance value an accepted node should have; [from -2 to 2] (default: 0.0)!")
+  parser.add_argument("--fast", action="store_true", dest="fast", help="Weather to perform a fast prediction!")
   args = parser.parse_args()
   
   # init output format
@@ -88,6 +89,13 @@ try:
           out.writeDebug( "hhblits: found hit: " + str( hit ) )
         hits.extend(blastResults.hits)
         hits.extend(hhblitsResults.hits)
+      
+      # reduce hits if fast prediction
+      if args.fast:
+        out.writeLog("Reduce hits for faster prediction!")
+        hitsTmp = hits[:]
+        hitsTmp.sort(sorted(hitsTmp, key=lambda t: t[ "hit_value" ]))
+        hits = hitsTmp
       
       # now get the hpo-Identifiers for each similar sequence
       out.writeLog("uniprot ids ({}) 2 HPO Terms".format( len(hits) ))
