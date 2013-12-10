@@ -93,9 +93,8 @@ try:
       # reduce hits if fast prediction
       if args.fast:
         out.writeLog("Reduce hits for faster prediction!")
-        hitsTmp = hits[:]
-        hitsTmp.sort(sorted(hitsTmp, key=lambda t: t[ "hit_value" ]))
-        hits = hitsTmp
+        hitsTmp = sorted(hits, key=lambda t: t[ "hit_value" ])
+        hits = hitsTmp[:6]
       
       # now get the hpo-Identifiers for each similar sequence
       out.writeLog("uniprot ids ({}) 2 HPO Terms".format( len(hits) ))
