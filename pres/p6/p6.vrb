@@ -1,0 +1,14 @@
+\frametitle{Running predictions}
+\footnotesize
+\begin{verbatim}
+e.g. ./hypnobrain -f sequence.fa -minConf 0.35
+
+usage: hypnobrain [-h] (-s SEQUENCE | -f FASTAFILE)
+                   [--svg] [-v VERBOSITY]
+                   [-w {bash,plain,html}] [-p HPOFILE]
+                   [-b BLASTDBFILE]
+                   [-l HHBLITSDBFILE] [-c UNI2HPO]
+                   [-e BLASTMINEVAL]
+                   [-n NEURONALNET] [-k LOOKUPDB]
+                   [--minConf MINIMALCONFIDENCE] [--fast]
+\end{verbatim}

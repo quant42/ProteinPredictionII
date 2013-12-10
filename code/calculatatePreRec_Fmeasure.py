@@ -100,7 +100,7 @@ Precisions = [[] for i in range(steps+1)]
 Recalls = [[] for i in range(steps+1)]
    
 
-for i in [11,12,13]:
+for i in [99]:#[11,12,13]:
     f, PreRecPoints = fMeasure(validationResults+str(i), steps)
     f_max.append(f[0])
     prec.append(f[1])
@@ -120,7 +120,8 @@ print "avg recall:    %0.4f+/-%0.4f"%(mean_rec, stdev_rec)
 
 for i in range(steps+1):
     avg_recall    , std_recall    = mean_stdev(Recalls[i])
-    avg_precision ,std_precisions = mean_stdev(Precisions[i])
+    avg_precision ,std_precision = mean_stdev(Precisions[i])
     print "%s;%s"%(avg_recall, avg_precision)
+    
 
 
