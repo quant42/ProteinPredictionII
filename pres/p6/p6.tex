@@ -2,7 +2,10 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
+%\usetikzlibrary{decorations.pathreplacing,calc}
+%\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
 \usepackage{graphicx}
+\usepackage{picture}
 \author{Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori}
 \title{HyPnOBrain}
 \subtitle{your homology based HPO neural network predictor}
@@ -52,16 +55,20 @@
 	\frametitle{Features}
 	\begin{itemize}
 		\item use neural network to calculate confidence per node
-		\item each node is assigned $x$ features derived from the merged tree
+		\item each node is assigned 12 features derived from the merged tree
 		\item[] \begin{itemize}
 					\item number of hits
 					\item min. E-value	
-					\item avg. E-value \qquad[3, 0.0074, 0.45, 84, $\dots$]
+					\item avg. E-value 
+					\item product of E-values
 					\item longest hit
 					\item $\dots$ 
+					\makebox(0,0){\put(65,8.0\normalbaselineskip){%
+               $\left.\rule{0pt}{3.1\normalbaselineskip}\right\}$ \,[3, 0.0074, 0.45, 4.2e-7, 84, $\dots$]}}
 				\end{itemize}
 				\item[] 
 	\end{itemize}
+	
 \end{frame}
 
 \begin{frame}
@@ -156,14 +163,13 @@
 
 \begin{frame}
 	\frametitle{Results}
-	Pre-Rec-Curve here\\
-	\hfill\\
-	\hfill\\
-	\hfill\\
+	\begin{center}
+	\includegraphics[width=0.5\textwidth]{PreRec_5_folds_small.pdf}
+	\end{center}
 	\begin{itemize}
-		\item F-measure $yy$ (at confidence level $x$)
-		\item Precision (at same confidence level $x$)
-		\item Recall (at same confidence level $x$)
+		\item F-measure $0.24\pm0.03$ (at confidence level $0.32$)
+		\item Precision $0.17\pm0.04$ (at same confidence level)
+		\item Recall  $0.51\pm0.10$ (at same confidence level)
 	\end{itemize}		
 	
 \end{frame}
