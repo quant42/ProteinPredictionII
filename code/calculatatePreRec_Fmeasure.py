@@ -93,14 +93,14 @@ def mean_stdev(data):
     m, sd = numpy.mean(a), numpy.std(a)    
     return m, sd
 
-steps = 10
+steps = 100
 f_max, prec, rec = [],[],[]
 
 Precisions = [[] for i in range(steps+1)]
 Recalls = [[] for i in range(steps+1)]
    
 
-for i in [4,5,11,12,13]:
+for i in [11,12,13]:
     f, PreRecPoints = fMeasure(validationResults+str(i), steps)
     f_max.append(f[0])
     prec.append(f[1])

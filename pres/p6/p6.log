@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.12.8)  10 DEC 2013 10:09
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.12.8)  10 DEC 2013 10:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1157,15 +1157,15 @@ Package pdftex.def Info: g.jpg used on input line 52.
 
 ] [6
 
-] <PreRec_5_folds.pdf, id=179, 505.89pt x 505.89pt>
-File: PreRec_5_folds.pdf Graphic file (type pdf)
+] <PreRec_3_folds.pdf, id=179, 505.89pt x 505.89pt>
+File: PreRec_3_folds.pdf Graphic file (type pdf)
 
-<use PreRec_5_folds.pdf>
-Package pdftex.def Info: PreRec_5_folds.pdf used on input line 175.
+<use PreRec_3_folds.pdf>
+Package pdftex.def Info: PreRec_3_folds.pdf used on input line 175.
 (pdftex.def)             Requested size: 153.64493pt x 153.64394pt.
  [7
 
- <./PreRec_5_folds.pdf>]
+ <./PreRec_3_folds.pdf>]
 \tf@nav=\write6
 \openout6 = `p6.nav'.
 
@@ -1207,7 +1207,7 @@ ts/type1/public/amsfonts/cm/cmssi8.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
 lic/amsfonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
 ic/amsfonts/symbols/msam7.pfb>
-Output written on p6.pdf (7 pages, 254111 bytes).
+Output written on p6.pdf (7 pages, 253987 bytes).
 PDF statistics:
  251 PDF objects out of 1000 (max. 8388607)
  218 compressed objects within 3 object streams
