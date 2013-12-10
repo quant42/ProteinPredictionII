@@ -1,32 +1,23 @@
 #!/usr/bin/env python
-import sys
-validationResults = '../data/validationResults_5'
+import sys, numpy
+validationResults = '../data/validationResults_'
 hpoMappingFile = '../data/UniProt_2_HPO_full'
 
-def fMeasure(validationResults, steps=10):
+def fMeasure(validationResults, steps):
     uni2hpoDict = {}
     f = open(hpoMappingFile)
     for line in f:
         line = line.strip()
         uni2hpoDict.update( { line.split("\t")[0] : line.split("\t")[1].split(",") } )
     f.close()
-    
-    maxConf = -99999
-    minConf = +99999
+
+    maxConf, minConf = Confidence(validationResults)
 
     ROCpoints = []
-    
-    for line in open(validationResults):
-        if line.startswith('*'):
-            continue
-        Sequence, HPOterm, confidence, validation = line.split()
-        if float(confidence) > maxConf:
-            maxConf = float(confidence)
-        elif float(confidence) < minConf:
-            minConf = float(confidence)
     F_max = 0
     pre_max = 0
     rec_max = 0
+    conf_max = -1
     for i in range(steps+1):
         confidenceLevel = (1.0/steps)*i
         precisions = []
@@ -78,10 +69,59 @@ def fMeasure(validationResults, steps=10):
                 F_max = f
                 pre_max = precision
                 rec_max = recall
+                conf_max = confidenceLevel
         except Exception:
             pass
-    return (F_max, pre_max, rec_max), ROCpoints
-f_max, ROCpoints = fMeasure(validationResults, steps=10)
-print "F-measure, precision and recall at same confidence =", f_max
-for rec, pre in ROCpoints:
-    print "%s;%s"%(rec, pre)
+    return (F_max, pre_max, rec_max, conf_max), ROCpoints
+
+def Confidence(validationResults):
+    maxC = -9999
+    minC = 9999
+    for line in open(validationResults):
+        if line.startswith('*'):
+            continue
+        Sequence, HPOterm, confidence, validation = line.split()
+        if float(confidence) > maxC:
+            maxC = float(confidence)
+        elif float(confidence) < minC:
+            minC = float(confidence)
+    return maxC, minC
+
+def mean_stdev(data):
+    a = 1.0*numpy.array(data)
+    n = len(a)
+    m, sd = numpy.mean(a), numpy.std(a)    
+    return m, sd
+
+steps = 100
+f_max, prec, rec = [],[],[]
+
+Precisions = [[] for i in range(steps+1)]
+Recalls = [[] for i in range(steps+1)]
+   
+
+for i in [99]:#[11,12,13]:
+    f, PreRecPoints = fMeasure(validationResults+str(i), steps)
+    f_max.append(f[0])
+    prec.append(f[1])
+    rec.append(f[2])
+    for j in range(len(PreRecPoints)):
+        Precisions[j].append(PreRecPoints[j][1])
+        Recalls[j].append(PreRecPoints[j][0])
+    print "F-measure, precision and recall at same confidence =", f
+
+
+mean_f, stdev_f = mean_stdev(f_max)
+mean_pre, stdev_pre = mean_stdev(prec)
+mean_rec, stdev_rec = mean_stdev(rec)
+print "avg F-max:     %0.4f+/-%0.4f"%(mean_f, stdev_f)
+print "avg precision: %0.4f+/-%0.4f"%(mean_pre, stdev_pre)
+print "avg recall:    %0.4f+/-%0.4f"%(mean_rec, stdev_rec)
+
+for i in range(steps+1):
+    avg_recall    , std_recall    = mean_stdev(Recalls[i])
+    avg_precision ,std_precision = mean_stdev(Precisions[i])
+    print "%s;%s"%(avg_recall, avg_precision)
+    
+
+
