@@ -100,7 +100,7 @@ Precisions = [[] for i in range(steps+1)]
 Recalls = [[] for i in range(steps+1)]
    
 
-for i in [99]:#[11,12,13]:
+for i in [11,12,13]:
     f, PreRecPoints = fMeasure(validationResults+str(i), steps)
     f_max.append(f[0])
     prec.append(f[1])
