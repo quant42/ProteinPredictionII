@@ -1,0 +1,39 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\author{Jonathan Boidol, Rene Schoeffel, Yann Sp\"ori}
+\title{HyPnOBrain}
+\subtitle{your homology based HPO neural network predictor}
+\date{\today}
+%\usepackage{default}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+ 
+\end{frame}
+
+\begin{frame}
+  \frametitle{Add new commandline option}
+ % \begin{center}
+     ~\\~\\
+     Add new commandline option:\\
+     -k \vspace{10 mm} --lookupdb\vspace{10 mm} for faster looking up blast and hhblits results\\
+     Lookup table of the following format (preCalc.py):\\~\\
+     {[}QUERYID{]}\newline
+     \vspace{10 mm} {[}METHOD{]} \vspace{10 mm} {[}MATCHID{]} \vspace{10 mm} {[}EVAL{]} \vspace{10 mm} {[}FROM{]} \vspace{10 mm} {[}TO{]} \vspace{10 mm} {[}ORDER{]}
+ % \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Network architecture}
+  Neuronal network not as good as expected
+  \begin{itemize}
+    \item simpler architecture $\Rightarrow$ no improvement in training time or performance
+    \item more complicated architecture $\Rightarrow$ still no improvement
+    \item overfitting is not the problem, so ...
+  \end{itemize}
+\end{frame}
+
+\end{document}
