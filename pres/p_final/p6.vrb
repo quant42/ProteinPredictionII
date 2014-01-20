@@ -1,0 +1,11 @@
+\frametitle{HyPnoBrain Online}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{webinterface.png}
+\end{center}
+
+\begin{itemize}
+\item \url{https://dataminer.informatik.tu-muenchen.de/~spoeri/}
+\item file or text field input
+\item option to speed prediction up by restricting hits to 6 best
+\end{itemize}
+

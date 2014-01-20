@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="200px" height="900px" viewBox="0 0 200 900">
+<line x1="20" y1="170" x2="20" y2="20" style="stroke: black; stroke-width: 2" />
+<line x1="20" y1="320" x2="20" y2="170" style="stroke: black; stroke-width: 2" />
+<line x1="20" y1="470" x2="20" y2="320" style="stroke: black; stroke-width: 2" />
+<line x1="20" y1="620" x2="20" y2="470" style="stroke: black; stroke-width: 2" />
+<line x1="20" y1="770" x2="20" y2="620" style="stroke: black; stroke-width: 2" />
+<text x="30" y="20" fill="green" style="font-size: 18px">HP:0000001</text>
+<text x="35" y="42" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="30" y="170" fill="green" style="font-size: 18px">HP:0000118</text>
+<text x="35" y="192" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="30" y="320" fill="green" style="font-size: 18px">HP:0000924</text>
+<text x="35" y="342" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="30" y="470" fill="green" style="font-size: 18px">HP:0011842</text>
+<text x="35" y="492" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="30" y="620" fill="green" style="font-size: 18px">HP:0011844</text>
+<text x="35" y="642" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<text x="30" y="770" fill="green" style="font-size: 18px">HP:0002813</text>
+<text x="35" y="792" fill="green" style="font-size: 16px">2: [met:-|id:hit2|val:-]</text>
+<circle cx="20" cy="20" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+<circle cx="20" cy="170" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+<circle cx="20" cy="320" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+<circle cx="20" cy="470" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+<circle cx="20" cy="620" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+<circle cx="20" cy="770" r="5" stroke="black" stroke-width="1" fill="#fa0000" />
+</svg>
