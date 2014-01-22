@@ -396,6 +396,7 @@ class HpoTerm():
 
 if __name__ == "__main__":
   graph = HpoGraph()
+  print len(graph.hpoTermsDict.keys())
 #  print "HP:0000008" in graph.getLeaves()
 #  print dir(graph.getHpoTermById("HP:0000008"))
 #  print graph.getHpoTermById("HP:0000008").is_a

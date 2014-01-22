@@ -2,7 +2,7 @@
 import sys, numpy
 validationResults = '../data/validationResults_'
 hpoMappingFile = '../data/UniProt_2_HPO_full'
-
+no_hpo_terms = 10101
 def fMeasure(validationResults, steps):
     uni2hpoDict = {}
     f = open(hpoMappingFile)
@@ -22,6 +22,7 @@ def fMeasure(validationResults, steps):
         confidenceLevel = (1.0/steps)*i
         precisions = []
         recalls = []
+        fprs = []
         TP, FP, FN = 0, 0, 0
         thisSequence = ''
         for line in open(validationResults):
@@ -44,6 +45,7 @@ def fMeasure(validationResults, steps):
                     if thisPrec != 0:
                         precisions.append(thisPrec)
                     recalls.append(thisRecall)
+                    fprs.append(FP/float(no_hpo_terms - TP - FN))
                 thisSequence = Sequence
                 TP, FP, FN = 0, 0, 0
                 
@@ -62,7 +64,9 @@ def fMeasure(validationResults, steps):
         except:
             precision = 0
         recall = sum(recalls)/len(recalls)
-        ROCpoints.append((recall,precision))
+        fpr = sum(fprs)/len(fprs)
+#        ROCpoints.append((recall,precision))
+        ROCpoints.append((fpr,recall))
         try:
             f = (2.0*precision*recall)/(precision+recall)
             if f > F_max:
