@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.12.8)  12 FEB 2014 18:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2013.12.8)  20 FEB 2014 16:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -359,134 +359,43 @@ Underfull \hbox (badness 10000) detected at line 16
 (./sections/abstract.tex
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <8> not available
 (Font)              Font shape `OT1/phv/b/n' tried instead on input line 3.
+
+Underfull \hbox (badness 1803) in paragraph at lines 3--5
+\OT1/phv/m/n/8 protein function helps to identify research targets, understand
+ []
+
 )
 LaTeX Font Info:    Font shape `OT1/phv/bx/n' in size <10> not available
 (Font)              Font shape `OT1/phv/b/n' tried instead on input line 20.
- (./sections/intro.tex) (./sections/methods.tex)
-(./sections/results.tex) (./sections/conclusion.tex)
+ (./sections/intro.tex
+Underfull \hbox (badness 1939) in paragraph at lines 1--2
+\OT1/ptm/m/n/9 predictor utilizing neural networks. This working paper first
+ []
+
+<figures/function_transfer.png, id=1, 713.66624pt x 311.1625pt>
+File: figures/function_transfer.png Graphic file (type png)
+
+<use figures/function_transfer.png>
+Package pdftex.def Info: figures/function_transfer.png used on input line 4.
+(pdftex.def)             Requested size: 201.59692pt x 87.89407pt.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 5.
+) (./sections/methods.tex)
+(./sections/results.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+(./sections/conclusion.tex)
 No file hypno.bbl.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 130.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 131.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 132.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 133.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 134.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 135.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 136.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 137.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 138.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 139.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 140.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 141.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:21.85844pt when 142.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 143.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 144.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 145.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 146.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 147.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 148.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 149.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 150.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 151.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 152.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 153.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:10.0pt when 154.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Extra height:0.0pt when 155.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-(2)Left:155.42921pt Right:158.85844pt Output:155.42921pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-(2)Left:158.85844pt Right:158.85844pt Output:158.85844pt
+Extra height:0.0pt when 372.71643pt
+(2)Left:372.71643pt Right:376.43288pt Output:372.71643pt
+(2)Left:376.43288pt Right:365.43288pt Output:376.43288pt
 - LAST -
 Extra skip:0.0pt
-Left:158.85844pt
-Right:158.85844pt
-Output:158.85844pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+Left:376.43288pt
+Right:365.43288pt
+Output:376.43288pt
 LaTeX Font Info:    Try loading font information for OMS+phv on input line 46.
-
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsphv.fd
 File: omsphv.fd 
 )
@@ -497,35 +406,38 @@ LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <7> not available
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
-
-] (./hypno.aux)
+ <./figures/function_transfer.png>]
+(./hypno.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
  ) 
 Here is how much of TeX's memory you used:
- 3351 strings out of 494979
- 43509 string characters out of 6179171
- 104170 words of memory out of 5000000
- 6471 multiletter control sequences out of 15000+600000
- 32849 words of font info for 68 fonts, out of 8000000 for 9000
+ 3377 strings out of 494979
+ 43878 string characters out of 6179171
+ 111178 words of memory out of 5000000
+ 6488 multiletter control sequences out of 15000+600000
+ 37742 words of font info for 80 fonts, out of 8000000 for 9000
  18 hyphenation exceptions out of 8191
- 38i,11n,28p,265b,258s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,11n,28p,1230b,258s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/h
-elvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb
-o8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmri8a.pfb>
-Output written on hypno.pdf (1 page, 77705 bytes).
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy8.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvbo8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
+/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on hypno.pdf (1 page, 131799 bytes).
 PDF statistics:
- 49 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
+ 66 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
