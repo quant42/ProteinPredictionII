@@ -1,18 +1,26 @@
 \subsection{Dataset}
 
 HypfuNN was developed at the rostlab\footnote{citation needed} along with other function prediction methods by other student groups. In order to better compare the fittness of the implemented prediction
-methods, we all used the same dataset to identify similar proteins and transfer there annotations to the query sequence, as descriped in the Implementation part. The dataset contains 2815 HPO-annotated
+methods, we all used the same dataset to identify similar proteins and transfer there annotations to the query sequence, as descriped in the implementation part. The dataset contains 2815 HPO-annotated
 proteins. [TODO: maybe say something about protein groups and/or possible data bias]
 
 \subsection{Implementation}
 
 As already described above, we predict protein annotations by homology. Proteins, that have the same function, so called homologs, tend to share a similar sequence. In order to identify proteins
 with similar sequence, we are using blast and hhblits. For both, blast and hhblits, we require an minimal e-value of 1, to exclude weak similar protein sequences. Our tool supports to use
-different blast e-value with the commandline option -e.
+different blast e-value with the commandline option -e, as well as looking up similar proteins in other databases with the commandline options -b for blast and -l for hhblits.\newline
+In order to map the annotations of the found proteins to the query sequence, we then lookup the annotations for each found similar sequence hit. This is done by an identifiert hpo terms mapping file.
+Our method support the use of different mapping files with the commandline option -c.\newline
+Since hpo is a hierarchical annotation system, each found annotation represent a tree. In order to merge these annotation trees, each node of each tree is annotated with information about the sequence
+hit, were this annotation was found.
 
-For each found similar sequences, we are then constructing a hpo tree.
+Although most hpo annotation nodes have only one parental node, 
 
 
+
+
+
+--fast 
 
 
 For each query sequence our de novo predictor first constructs an hpo term tree from the 

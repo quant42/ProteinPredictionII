@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  25 FEB 2014 02:00
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  25 FEB 2014 08:50
 entering extended mode
  %&-line parsing enabled.
 **hypno.tex
@@ -322,59 +322,61 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 ) (./sections/methods.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-)
-(./sections/results.tex) (./sections/conclusion.tex)
-No file hypno.bbl.
-Extra height:158.67415pt when 486.49052pt
-Extra height:158.67415pt when 487.49052pt
-Extra height:158.67415pt when 488.49052pt
-Extra height:158.67415pt when 489.49052pt
-Extra height:158.67415pt when 490.49052pt
-Extra height:158.67415pt when 491.49052pt
-Extra height:158.67415pt when 492.49052pt
-Extra height:158.67415pt when 493.49052pt
-Extra height:158.67415pt when 494.49052pt
-Extra height:0.0pt when 495.49052pt
-(2)Left:495.49052pt Right:504.03262pt Output:495.49052pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-(2)Left:504.03262pt Right:504.03262pt Output:504.03262pt
-- LAST -
-Extra skip:0.0pt
-Left:504.03262pt
-Right:504.03262pt
-Output:504.03262pt
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Font Info:    Try loading font information for OMS+phv on input line 46.
+LaTeX Font Info:    Try loading font information for OMS+phv on input line 26.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/omsphv.fd
 File: omsphv.fd 
 )
 LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <7> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 46.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 26.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./figures/function_transfer.png (PNG copy)>]
-(./hypno.aux)
+ <./figures/function_transfer.png (PNG copy)>])
+(./sections/results.tex) (./sections/conclusion.tex)
+No file hypno.bbl.
+Extra height:0.0pt when 79.92921pt
+(2)Left:79.92921pt Right:67.85844pt Output:79.92921pt
+- LAST -
+Extra skip:0.0pt
+Left:79.92921pt
+Right:67.85844pt
+Output:79.92921pt
+LaTeX Font Info:    Font shape `OT1/phv/bx/it' in size <8> not available
+(Font)              Font shape `OT1/phv/b/it' tried instead on input line 46.
+LaTeX Font Info:    Font shape `OT1/phv/b/it' in size <8> not available
+(Font)              Font shape `OT1/phv/b/sl' tried instead on input line 46.
+
+Overfull \hbox (261.0pt too wide) has occurred while \output is active
+[][] 
+ []
+
+
+Overfull \vbox (1.0pt too high) has occurred while \output is active []
+
+
+Overfull \hbox (261.0pt too wide) has occurred while \output is active
+[][] 
+ []
+
+[2
+
+] (./hypno.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
  ) 
 Here is how much of TeX's memory you used:
- 2804 strings out of 495046
- 33822 string characters out of 1181937
- 100158 words of memory out of 3000000
- 5905 multiletter control sequences out of 15000+50000
- 40953 words of font info for 84 fonts, out of 3000000 for 9000
+ 2806 strings out of 495046
+ 33851 string characters out of 1181937
+ 92158 words of memory out of 3000000
+ 5907 multiletter control sequences out of 15000+50000
+ 41552 words of font info for 85 fonts, out of 3000000 for 9000
  32 hyphenation exceptions out of 8191
- 34i,11n,26p,1230b,258s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 34i,12n,26p,1230b,322s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
 ve/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/typ
 e1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public/am
@@ -388,9 +390,9 @@ usr/share/texmf-texlive/fonts/type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-
 texlive/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/
 urw/times/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pf
 b>
-Output written on hypno.pdf (1 page, 178077 bytes).
+Output written on hypno.pdf (2 pages, 179703 bytes).
 PDF statistics:
- 64 PDF objects out of 1000 (max. 8388607)
+ 67 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
