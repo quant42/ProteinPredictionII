@@ -5,4 +5,18 @@
 \newblock Critical assessment of function annotation experiment --
   \url{http://biofunctionprediction.org}.
 
+\bibitem[K{\"{o}}hler {\em et~al.}, 2014]{Koehler2014}
+K{\"{o}}hler,S., Doelken,S.C., Mungall,C.J., Bauer,S., Firth,H.V.,
+  Bailleul-Forestier,I., Black,G.C.M., Brown,D.L., Brudno,M., Campbell,J.,
+  Fitzpatrick,D.R., Eppig,J.T., Jackson,A.P., Freson,K., Girdea,M., Helbig,I.,
+  Hurst,J.A., J{\"{a}}hn,J., Jackson,L.G., Kelly,A.M., Ledbetter,D.H.,
+  Mansour,S., Martin,C.L., Moss,C., Mumford,A., Ouwehand,W.H., Park,S.M.,
+  Riggs,E.R., Scott,R.H., Sisodiya,S., Vooren,S.V., Wapner,R.J., Wilkie,A.O.M.,
+  Wright,C.F., {Vulto-van Silfhout},A.T., Leeuw,N.d., {de Vries},B.B.A.,
+  Washingthon,N.L., Smith,C.L., Westerfield,M., Schofield,P., Ruef,B.J.,
+  Gkoutos,G.V., Haendel,M., Smedley,D., Lewis,S.E.  and Robinson,P.N.
+  (2014{\em{}}) The human phenotype ontology project: linking molecular biology
+  and disease through phenotype data.
+\newblock {\em Nucleic Acids Res, } {\bf 42} (1), D966--D974.
+
 \end{thebibliography}

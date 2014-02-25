@@ -3,7 +3,7 @@
 
 
 @Misc{CAFA,
-  Title                    = {Critical Assessment of Function Annotation experiment -- \href{http://biofunctionprediction.org}},
+  Title                    = {Critical Assessment of Function Annotation experiment -- \url{http://biofunctionprediction.org}},
 
   Author                   = {{CAFA}},
   Year                     = {2014},
