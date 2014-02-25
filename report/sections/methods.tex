@@ -1,0 +1,18 @@
+\subsection{Dataset}
+
+HypfuNN was developed at the rostlab\footnote{citation needed} along with other function prediction methods by other student groups. In order to better compare the fittness of the implemented prediction
+methods, we all used the same dataset to identify similar proteins and transfer there annotations to the query sequence, as descriped in the Implementation part. The dataset contains 2815 HPO-annotated
+proteins. [TODO: maybe say something about protein groups and/or possible data bias]
+
+\subsection{Implementation}
+
+As already described above, we predict protein annotations by homology. Proteins, that have the same function, so called homologs, tend to share a similar sequence. In order to identify proteins
+with similar sequence, we are using blast and hhblits. For both, blast and hhblits, we require an minimal e-value of 1, to exclude weak similar protein sequences. Our tool supports to use
+different blast e-value with the commandline option -e.
+
+For each found similar sequences, we are then constructing a hpo tree.
+
+
+
+
+For each query sequence our de novo predictor first constructs an hpo term tree from the 
