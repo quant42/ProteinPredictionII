@@ -1,0 +1,16 @@
+% This file was created with JabRef 2.10b2.
+% Encoding: UTF-8
+
+
+@Misc{CAFA,
+  Title                    = {Critical Assessment of Function Annotation experiment -- \href{http://biofunctionprediction.org}},
+
+  Author                   = {{CAFA}},
+  Year                     = {2014},
+
+  Organization             = {{The Automated Protein Function Prediction Special Interest Group}},
+  Owner                    = {jonathan},
+  Timestamp                = {2014.02.25},
+  Url                      = {\url{http://biofunctionprediction.org/}}
+}
+
