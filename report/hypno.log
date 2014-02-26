@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 17:46
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 20:28
 entering extended mode
  %&-line parsing enabled.
 **hypno.tex
@@ -335,7 +335,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-<figures/merge_trees.png, id=2, 1003.75pt x 766.062pt>
+<figures/merge_trees.png, id=2, 899.36pt x 766.062pt>
 File: figures/merge_trees.png Graphic file (type png)
 
 <use figures/merge_trees.png>
@@ -436,15 +436,40 @@ Underfull \hbox (badness 1859) in paragraph at lines 9--21
  []
 
 )
-Extra height:10.0pt when 196.47421pt
-Extra height:10.0pt when 197.47421pt
-Extra height:0.0pt when 198.47421pt
-(2)Left:198.47421pt Right:197.94843pt Output:198.47421pt
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:32.94843pt when 201.97421pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:32.94843pt when 202.97421pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:32.94843pt when 203.97421pt
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Extra height:32.94843pt when 204.97421pt
+Extra height:0.0pt when 205.97421pt
+(2)Left:205.97421pt Right:197.94843pt Output:205.97421pt
 - LAST -
 Extra skip:0.0pt
-Left:198.47421pt
+Left:205.97421pt
 Right:197.94843pt
-Output:198.47421pt
+Output:205.97421pt
 
 Overfull \hbox (261.0pt too wide) has occurred while \output is active
 [][] 
@@ -487,7 +512,7 @@ mf-texlive/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf-texlive/fonts/
 type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/
 utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/sha
 re/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on hypno.pdf (3 pages, 278450 bytes).
+Output written on hypno.pdf (3 pages, 264283 bytes).
 PDF statistics:
  89 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
