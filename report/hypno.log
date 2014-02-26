@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 14:13
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 15:59
 entering extended mode
  %&-line parsing enabled.
 **hypno.tex
@@ -355,11 +355,7 @@ LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <7> not available
 (./sections/results.tex <figures/PreRecROC.pdf, id=20, 505.89pt x 505.89pt>
 File: figures/PreRecROC.pdf Graphic file (type pdf)
 
-<use figures/PreRecROC.pdf>
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-) (./sections/conclusion.tex)
+<use figures/PreRecROC.pdf>) (./sections/conclusion.tex)
 Underfull \hbox (badness 3701) in paragraph at lines 1--39
 \OT1/ptm/m/n/9 Homology based prediction is a standard technique in the
  []
@@ -370,9 +366,9 @@ Underfull \hbox (badness 1092) in paragraph at lines 1--39
  []
 
 LaTeX Font Info:    Font shape `OT1/phv/bx/it' in size <8> not available
-(Font)              Font shape `OT1/phv/b/it' tried instead on input line 42.
+(Font)              Font shape `OT1/phv/b/it' tried instead on input line 39.
 LaTeX Font Info:    Font shape `OT1/phv/b/it' in size <8> not available
-(Font)              Font shape `OT1/phv/b/sl' tried instead on input line 42.
+(Font)              Font shape `OT1/phv/b/sl' tried instead on input line 39.
 
 Overfull \hbox (261.0pt too wide) has occurred while \output is active
 [][] 
@@ -440,18 +436,15 @@ Underfull \hbox (badness 1859) in paragraph at lines 9--21
  []
 
 )
-Extra height:10.0pt when 138.2987pt
-Extra height:10.0pt when 139.2987pt
-Extra height:10.0pt when 140.2987pt
-Extra height:10.0pt when 141.2987pt
-Extra height:10.0pt when 142.2987pt
-Extra height:0.0pt when 143.2987pt
-(2)Left:143.2987pt Right:142.59741pt Output:143.2987pt
+Extra height:10.0pt when 174.2987pt
+Extra height:10.0pt when 175.2987pt
+Extra height:0.0pt when 176.2987pt
+(2)Left:176.2987pt Right:175.59741pt Output:176.2987pt
 - LAST -
 Extra skip:0.0pt
-Left:143.2987pt
-Right:142.59741pt
-Output:143.2987pt
+Left:176.2987pt
+Right:175.59741pt
+Output:176.2987pt
 
 Overfull \hbox (261.0pt too wide) has occurred while \output is active
 [][] 
@@ -494,7 +487,7 @@ mf-texlive/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf-texlive/fonts/
 type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/
 utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/sha
 re/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on hypno.pdf (3 pages, 524598 bytes).
+Output written on hypno.pdf (3 pages, 522788 bytes).
 PDF statistics:
  87 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

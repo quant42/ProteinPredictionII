@@ -22,18 +22,18 @@ all subtrees are taken into account. However when calling our method with the co
 Using the pyBrain\footnote{citation} toolkit, we trained a neuronal network, to find annotation nodes that may be transfered to the query sequence. For this step, the following features were taken into
 account:
 \begin{itemize}
-\item the length of the query sequence
-\item number of hits
-\item longest hit
-\item avg hit
-\item min E-Val
-\item avg E-Val
-\item product of E-Val
-\item best e-value from blast or hhblits
-\item min heigth of HPO-Tree
-\item max heigth in HPO-Tree
-\item max. overlap of query and all hits
-\item length of best hit
+\item the length of the query sequence.
+\item the number of hits that have/support this annotation.
+\item the longest range length of all hits having this annotation.
+\item the average range length of all hits having this annotation.
+\item the best e-value of all hits having this annotation.
+\item the average e-value of all hits having this annotation.
+\item thr product of the e-value from all hits having this annotation.
+\item whether the hit with the best e-value was found by the blast or hhblits.
+\item the minimal distance of the annotation to the annotation root.
+\item the maximal distance of the annotation to the annotation root. (Since some root may have multiple parent nodes, this feature may differ to the above feature.)
+\item the coverage of the sequence length, that have similar regions in other hits having this annotation.
+\item the length of the longest hit of all hits having this annotation.
 \end{itemize}
 The used neuronal network has an input node for each of the above mentioned features, as well as two hidden layers. The first hidden layer contains features + 1 nodes, while the second hidden layer
 contains 3 nodes. The first output node predict whether we may transfer the given annotation to the query sequence. The second output node predicts whether we may not transfer the annotation.
