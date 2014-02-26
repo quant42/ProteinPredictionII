@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 16:08
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.1.30)  26 FEB 2014 17:46
 entering extended mode
  %&-line parsing enabled.
 **hypno.tex
@@ -339,13 +339,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: figures/merge_trees.png Graphic file (type png)
 
 <use figures/merge_trees.png>
-LaTeX Font Info:    Try loading font information for OMS+phv on input line 25.
+LaTeX Font Info:    Try loading font information for OMS+phv on input line 26.
 
 (/usr/share/texmf-texlive/tex/latex/psnfss/omsphv.fd
 File: omsphv.fd 
 )
 LaTeX Font Info:    Font shape `OMS/phv/m/n' in size <7> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 25.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 26.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
@@ -436,15 +436,15 @@ Underfull \hbox (badness 1859) in paragraph at lines 9--21
  []
 
 )
-Extra height:10.0pt when 174.2987pt
-Extra height:10.0pt when 175.2987pt
-Extra height:0.0pt when 176.2987pt
-(2)Left:176.2987pt Right:175.59741pt Output:176.2987pt
+Extra height:10.0pt when 196.47421pt
+Extra height:10.0pt when 197.47421pt
+Extra height:0.0pt when 198.47421pt
+(2)Left:198.47421pt Right:197.94843pt Output:198.47421pt
 - LAST -
 Extra skip:0.0pt
-Left:176.2987pt
-Right:175.59741pt
-Output:176.2987pt
+Left:198.47421pt
+Right:197.94843pt
+Output:198.47421pt
 
 Overfull \hbox (261.0pt too wide) has occurred while \output is active
 [][] 
@@ -466,13 +466,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 2941 strings out of 495046
- 35675 string characters out of 1181937
- 94239 words of memory out of 3000000
- 6027 multiletter control sequences out of 15000+50000
- 45486 words of font info for 93 fonts, out of 3000000 for 9000
+ 2944 strings out of 495046
+ 35731 string characters out of 1181937
+ 94274 words of memory out of 3000000
+ 6030 multiletter control sequences out of 15000+50000
+ 45585 words of font info for 93 fonts, out of 3000000 for 9000
  32 hyphenation exceptions out of 8191
- 34i,11n,26p,1250b,362s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 34i,11n,26p,1250b,361s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
 ve/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/typ
 e1/public/amsfonts/cm/cmmi9.pfb></usr/share/texmf-texlive/fonts/type1/public/am
@@ -487,7 +487,7 @@ mf-texlive/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texmf-texlive/fonts/
 type1/urw/helvetic/uhvro8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/
 utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmr8a.pfb></usr/sha
 re/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on hypno.pdf (3 pages, 277506 bytes).
+Output written on hypno.pdf (3 pages, 278450 bytes).
 PDF statistics:
  89 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

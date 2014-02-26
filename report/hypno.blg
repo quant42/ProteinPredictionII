@@ -1,46 +1,45 @@
-This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
 The top-level auxiliary file: hypno.aux
 The style file: bioinformatics.bst
 Database file #1: references.bib
-You've used 2 entries,
+You've used 3 entries,
             2135 wiz_defined-function locations,
-            519 strings with 7288 characters,
-and the built_in function-call counts, 2053 in all, are:
-= -- 159
-> -- 245
+            524 strings with 7500 characters,
+and the built_in function-call counts, 2500 in all, are:
+= -- 198
+> -- 288
 < -- 1
-+ -- 97
-- -- 96
-* -- 242
-:= -- 378
-add.period$ -- 4
-call.type$ -- 2
-change.case$ -- 54
-chr.to.int$ -- 2
-cite$ -- 7
-duplicate$ -- 22
-empty$ -- 48
-format.name$ -- 98
-if$ -- 352
++ -- 113
+- -- 112
+* -- 289
+:= -- 459
+add.period$ -- 6
+call.type$ -- 3
+change.case$ -- 65
+chr.to.int$ -- 3
+cite$ -- 10
+duplicate$ -- 31
+empty$ -- 63
+format.name$ -- 115
+if$ -- 431
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 1
-newline$ -- 11
-num.names$ -- 6
-pop$ -- 54
+newline$ -- 15
+num.names$ -- 9
+pop$ -- 66
 preamble$ -- 1
-purify$ -- 54
+purify$ -- 65
 quote$ -- 0
-skip$ -- 22
+skip$ -- 31
 stack$ -- 0
-substring$ -- 53
+substring$ -- 63
 swap$ -- 1
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
+type$ -- 18
 warning$ -- 0
-while$ -- 6
+while$ -- 8
 width$ -- 0
-write$ -- 24
+write$ -- 34

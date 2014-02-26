@@ -14,12 +14,13 @@ Since hpo is a hierarchical annotation system, each found annotation represent a
 hit. Hereby our method supports the fact, that some hpoterms have more than a single parent node.\newline
 \begin{figure}[!hb]
 \includegraphics[width = 0.4\textwidth]{figures/merge_trees.png}
-\caption{Merge trees TODO}
+\caption{Assuming the similarity search for a query sequence, results in two hits. From the two hits, the two trees (A) and (B) can be constructed. Out of these two hit-trees, the tree (C) can be
+constructed by merging. Since each node represents an annotation, we may validate if we accept this annotation for the query sequence using the nodes hit attributes.}
 \label{fig:function_transfer}
 \end{figure}
 In order to predict whether a single annotation node can be transfered to the query sequence, we merge the found subtrees together (Figure \ref{fig:function_transfer}). By default, for the tree merging,
 all subtrees are taken into account. However when calling our method with the commandline option --fast, only the annotation trees for the best 6 hits (by e-value) will be merged.\newline
-Using the pyBrain\footnote{citation} toolkit, we trained a neuronal network, to find annotation nodes that may be transfered to the query sequence. For this step, the following features were taken into
+Using the pyBrain toolkit~\citep{schaul2010}, we trained a neuronal network, to find annotation nodes that may be transfered to the query sequence. For this step, the following features were taken into
 account:
 \begin{itemize}
 \item the length of the query sequence.

@@ -19,4 +19,9 @@ K{\"{o}}hler,S., Doelken,S.C., Mungall,C.J., Bauer,S., Firth,H.V.,
   and disease through phenotype data.
 \newblock {\em Nucleic Acids Res, } {\bf 42} (1), D966--D974.
 
+\bibitem[Schaul {\em et~al.}, 2010]{schaul2010}
+Schaul,T., Bayer,J., Wierstra,D., Sun,Y., Felder,M., Sehnke,F.,
+  R\"{u}ckstie\ss,T.  and Schmidhuber,J. (2010{\em{}}).
+\newblock {PyBrain}.
+
 \end{thebibliography}

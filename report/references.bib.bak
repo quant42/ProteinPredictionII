@@ -14,3 +14,11 @@
   Url                      = {\url{http://biofunctionprediction.org/}}
 }
 
+@Article{schaul2010,
+author = {Schaul, Tom and Bayer, Justin and Wierstra, Daan and Sun, Yi and Felder, Martin and Sehnke, Frank and R\"{u}ckstie\ss, Thomas and Schmidhuber, J\"{u}rgen},
+journal = {Journal of Machine Learning Research},
+keywords = {machine learning,neural networks,optimization,python,reinforcement learning},
+title = {{PyBrain}},
+year = {2010}
+}
+
