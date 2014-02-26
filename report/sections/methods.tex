@@ -1,6 +1,8 @@
 \subsection{Dataset}
 
-HypfuNN was developed as CAFA~\citep{CAFA} entry competing against function prediction methods by other student groups. In order to compare the fitness of the implemented prediction methods, a common dataset for training and testing for all groups was used, as described in the implementation part. The dataset contains 2815 HPO-annotated proteins. [TODO: maybe say something about protein groups and/or possible data bias]
+HypfuNN was developed as CAFA~\citep{CAFA} entry competing against function prediction methods by other student groups. In order to compare the fitness of the implemented prediction methods, a common
+dataset for training and testing for all groups was used, as described in the implementation part. The dataset contains 2815 HPO-annotated proteins. [TODO: maybe say something about protein groups
+and/or possible data bias]
 
 \subsection{Implementation}
 
@@ -10,15 +12,37 @@ different blast e-value with the commandline option -e, as well as looking up si
 In order to map the annotations of the found proteins to the query sequence, we then lookup the annotations for each found similar sequence hit. This is done by an identifiert hpo terms mapping file.
 Our method support the use of different mapping files with the commandline option -c.\newline
 Since hpo is a hierarchical annotation system, each found annotation represent a tree. In order to merge these annotation trees, each node of each tree is annotated with information about the sequence
-hit, were this annotation was found.
+hit, were this annotation was found. Hereby our method supports the fact, that some hpoterms have more than a single parent node.\newline
+\begin{figure}[!hb]
+\includegraphics[width = 0.4\textwidth]{figures/merge_trees.png}
+\caption{Merge trees TODO}
+\label{fig:function_transfer}
+\end{figure}
+In order to predict whether a single annotation node can be transfered to the query sequence, we merge
+the found subtrees together. By default, for the tree merging, all subtrees are taken into account.
+However when calling our method with the commandline option --fast, only the annotation trees for the 
+best 6 hits (by e-value) will be merged.\newline
+Using the pyBrain\footnote{citation} toolkit, we trained a neuronal network, to find annotation nodes
+that may be transfered to the query sequence. For this step, the following features were taken into
+account:\newline
+TODO: features list\newline
+\begin{itemize}
+\item Length of query sequence
+\item number of hits
+\item longest hit
+\item avg hit
+\item min E-Val
+\item avg E-Val
+\item product of E-Val
+\item best 
 
-Although most hpo annotation nodes have only one parental node, 
+\end{itemize}
+The used neuronal network has an input node for each of the above mentioned features, as well as two
+hidden layers. The first hidden layer contains features + 1 nodes, while the second hidden layer
+contains 3 nodes. The first output node predict whether we may transfer the given annotation to the 
+query sequence. The second output node predicts whether we may not transfer the annotation.
+The difference between the two output nodes is taken as the confidence of our method.
 
 
+TODO: training
 
-
-
---fast 
-
-
-For each query sequence our de novo predictor first constructs an hpo term tree from the 
