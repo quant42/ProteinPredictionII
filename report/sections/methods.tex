@@ -11,17 +11,16 @@ different blast e-value with the commandline option -e, as well as looking up si
 In order to map the annotations of the found proteins to the query sequence, our tool is looking up the annotations for each found similar sequence hit. This step is done by an identifier hpo terms mapping
 file. Our method support the use of different mapping files with the commandline option -c.\newline
 Since hpo is a hierarchical annotation system, each found annotation represent a tree. In order to merge these annotation trees, each node of each tree is annotated with information about the sequence
-hit (see Fig. 2). Hereby our method supports the fact, that some hpoterms have more than a single parent node.\newline
+hit. Hereby our method supports the fact, that some hpoterms have more than a single parent node.\newline
 \begin{figure}[!hb]
 \includegraphics[width = 0.4\textwidth]{figures/merge_trees.png}
 \caption{Merge trees TODO}
 \label{fig:function_transfer}
 \end{figure}
-In order to predict whether a single annotation node can be transfered to the query sequence, we merge the found subtrees together. By default, for the tree merging, all subtrees are taken into account.
-However when calling our method with the commandline option --fast, only the annotation trees for the best 6 hits (by e-value) will be merged.\newline
+In order to predict whether a single annotation node can be transfered to the query sequence, we merge the found subtrees together (Figure \ref{fig:function_transfer}). By default, for the tree merging,
+all subtrees are taken into account. However when calling our method with the commandline option --fast, only the annotation trees for the best 6 hits (by e-value) will be merged.\newline
 Using the pyBrain\footnote{citation} toolkit, we trained a neuronal network, to find annotation nodes that may be transfered to the query sequence. For this step, the following features were taken into
-account:\newline
-TODO: features list\newline
+account:
 \begin{itemize}
 \item the length of the query sequence
 \item number of hits
@@ -36,8 +35,6 @@ TODO: features list\newline
 \item max. overlap of query and all hits
 \item length of best hit
 \end{itemize}
-The used neuronal network has an input node for each of the above mentioned features, as well as two
-hidden layers. The first hidden layer contains features + 1 nodes, while the second hidden layer
-contains 3 nodes. The first output node predict whether we may transfer the given annotation to the 
-query sequence. The second output node predicts whether we may not transfer the annotation.
-The difference between the two output nodes is taken as the confidence of our method.
+The used neuronal network has an input node for each of the above mentioned features, as well as two hidden layers. The first hidden layer contains features + 1 nodes, while the second hidden layer
+contains 3 nodes. The first output node predict whether we may transfer the given annotation to the query sequence. The second output node predicts whether we may not transfer the annotation.
+The difference between the two output nodes is taken as the methods confidence.
